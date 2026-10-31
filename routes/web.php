@@ -53,11 +53,13 @@ Route::get('/syarat-ketentuan', [PlanetBanController::class, 'terms'])->name('te
 // AREA KHUSUS ADMIN (Manajemen & Auth)
 // ==========================================
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::redirect('/login', '/login')->name('login');
-    Route::redirect('/register', '/register')->name('register');
-    Route::redirect('/logout', '/login')->name('logout');
+    Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'loginAdmin'])
+        ->middleware('throttle:6,1')
+        ->name('login.submit');
+    Route::redirect('/register', '/admin/login')->name('register');
 
-    Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/bookings', [AdminDashboardController::class, 'bookings'])->name('bookings');
         Route::post('/bookings/{booking}/update', [AdminDashboardController::class, 'updateBookingStatus'])

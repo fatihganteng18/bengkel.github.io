@@ -26,12 +26,45 @@ class PlanetBanController extends Controller
         $product = Product::findOrFail($id);
         $stores = Store::all();
 
+        preg_match('/(\d{2,3})\s*\/\s*(\d{2})\s*[- ]?\s*(\d{2})/', $product->name, $tireSizeParts);
+        $tireSize = isset($tireSizeParts[3])
+            ? "{$tireSizeParts[1]}/{$tireSizeParts[2]}-{$tireSizeParts[3]}"
+            : null;
+        $compatibleMotorcycles = $tireSize
+            ? Motorcycle::query()
+                ->where('front_tire_size', $tireSize)
+                ->orWhere('rear_tire_size', $tireSize)
+                ->orderBy('brand')
+                ->orderBy('model_name')
+                ->get()
+            : collect();
+        $galleryImages = collect($product->gallery_images ?? [])
+            ->prepend($product->image)
+            ->filter(fn ($image): bool => is_string($image) && trim($image) !== '')
+            ->unique()
+            ->values();
+        $soldCount = Booking::query()
+            ->where('product_id', $product->id)
+            ->where(function ($query): void {
+                $query->where('status', 'completed')
+                    ->orWhereHas('payment', fn ($paymentQuery) => $paymentQuery->where('status', 'paid'));
+            })
+            ->count();
+
         $relatedProducts = Product::where('category', $product->category)
             ->where('id', '!=', $id)
             ->take(4)
             ->get();
 
-        return view('product-detail', compact('product', 'stores', 'relatedProducts'));
+        return view('product-detail', compact(
+            'product',
+            'stores',
+            'relatedProducts',
+            'tireSize',
+            'compatibleMotorcycles',
+            'galleryImages',
+            'soldCount',
+        ));
     }
 
     public function storeBooking(Request $request)

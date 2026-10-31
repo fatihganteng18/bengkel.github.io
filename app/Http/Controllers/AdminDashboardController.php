@@ -18,33 +18,64 @@ class AdminDashboardController extends Controller
     public function index(): View
     {
         $firstMonth = now()->startOfMonth()->subMonths(5);
-        $monthlyCounts = collect(range(0, 5))
+        $monthlyMetrics = collect(range(0, 5))
             ->mapWithKeys(fn (int $offset) => [$firstMonth->copy()->addMonths($offset)->format('Y-m') => [
                 'transactions' => 0,
+                'revenue' => 0.0,
             ]]);
 
         Payment::query()
             ->where('created_at', '>=', $firstMonth)
             ->get(['created_at'])
-            ->each(function (Payment $payment) use ($monthlyCounts): void {
+            ->each(function (Payment $payment) use ($monthlyMetrics): void {
                 $month = Carbon::parse($payment->created_at)->format('Y-m');
 
-                if (! $monthlyCounts->has($month)) {
+                if (! $monthlyMetrics->has($month)) {
                     return;
                 }
 
-                $counts = $monthlyCounts->get($month);
-                $counts['transactions']++;
-                $monthlyCounts->put($month, $counts);
+                $metrics = $monthlyMetrics->get($month);
+                $metrics['transactions']++;
+                $monthlyMetrics->put($month, $metrics);
+            });
+
+        Payment::query()
+            ->where('status', 'paid')
+            ->whereNotNull('paid_at')
+            ->where('paid_at', '>=', $firstMonth)
+            ->get(['paid_at', 'amount'])
+            ->each(function (Payment $payment) use ($monthlyMetrics): void {
+                $month = Carbon::parse($payment->paid_at)->format('Y-m');
+
+                if (! $monthlyMetrics->has($month)) {
+                    return;
+                }
+
+                $metrics = $monthlyMetrics->get($month);
+                $metrics['revenue'] += (float) ($payment->amount ?? 0);
+                $monthlyMetrics->put($month, $metrics);
             });
 
         $bookings = Booking::query();
         $bestSellers = Product::query()
-            ->whereHas('bookings')
-            ->withCount('bookings')
+            ->whereHas('bookings', fn ($query) => $query
+                ->where(function ($query): void {
+                    $query->where('status', 'completed')
+                        ->orWhereHas('payment', fn ($paymentQuery) => $paymentQuery->where('status', 'paid'));
+                }))
+            ->withCount(['bookings' => fn ($query) => $query
+                ->where(function ($query): void {
+                    $query->where('status', 'completed')
+                        ->orWhereHas('payment', fn ($paymentQuery) => $paymentQuery->where('status', 'paid'));
+                })])
             ->orderByDesc('bookings_count')
             ->limit(5)
             ->get();
+        $stockProducts = Product::query()
+            ->orderBy('stock')
+            ->orderBy('name')
+            ->limit(8)
+            ->get(['name', 'stock']);
         $lowStockProducts = Product::query()
             ->where('stock', '<=', self::LOW_STOCK_THRESHOLD)
             ->orderBy('stock')
@@ -52,11 +83,14 @@ class AdminDashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', [
-            'chartLabels' => $monthlyCounts->keys()->map(
+            'chartLabels' => $monthlyMetrics->keys()->map(
                 fn (string $month) => Carbon::createFromFormat('Y-m', $month)->translatedFormat('M Y')
             )->values(),
-            'transactionCounts' => $monthlyCounts->pluck('transactions')->values(),
+            'transactionCounts' => $monthlyMetrics->pluck('transactions')->values(),
+            'monthlyRevenue' => $monthlyMetrics->pluck('revenue')->map(fn (float $amount) => round($amount, 2))->values(),
+            'revenueTotal' => $monthlyMetrics->sum('revenue'),
             'bestSellers' => $bestSellers,
+            'stockProducts' => $stockProducts,
             'lowStockProducts' => $lowStockProducts,
             'totalBookings' => (clone $bookings)->count(),
             'pendingBookings' => (clone $bookings)->where('status', 'pending')->count(),

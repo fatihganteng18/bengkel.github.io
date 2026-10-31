@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'gallery_images' => 'array',
+        ];
+    }
+
     public function getEffectivePriceAttribute(): float
     {
         return $this->has_discount

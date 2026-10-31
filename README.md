@@ -7,6 +7,35 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Planet Ban
+
+A Laravel storefront for motorcycle products and service bookings, with an Alpine.js customer experience and a role-protected admin workspace.
+
+### Features
+
+- Product catalog and detail pages with image galleries, tire fitment information, and cart drawer.
+- Service booking, payment-method selection, booking status, and customer account pages.
+- Persistent light/dark theme and Indonesian/English interface preferences.
+- Separate customer and administrator sign-in routes.
+- Admin booking management and Chart.js sales, best-seller, and inventory dashboards.
+
+### Local setup
+
+1. Install PHP and Node dependencies, copy `.env.example` to `.env`, and generate an application key.
+2. Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the local `.env` file. The default admin email is `adillahalfaris@gmail.com`; set the requested password there rather than committing credentials to the repository.
+3. Run `php artisan migrate --seed` to create the schema and bootstrap the administrator.
+4. Run `npm install` and `npm run build`, then start the app with `php artisan serve`.
+
+The admin seeder refuses to run without an email and password. On production, configure a unique strong password through the deployment environment, set `APP_DEBUG=false`, and use HTTPS.
+
+### Sign-in and access
+
+- Customer sign-in: `/login`
+- Administrator sign-in: `/admin/login`
+- Admin workspace: `/admin/dashboard` (requires an authenticated account with the `admin` role)
+
+Public registration always creates a `user` account and rejects the configured administrator email.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

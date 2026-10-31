@@ -166,6 +166,11 @@
                         <a href="{{ route('register') }}" class="font-bold text-blue-900 transition hover:text-red-600">Daftar gratis</a>
                     </p>
 
+                    <p class="mt-4 text-center text-xs text-slate-400">
+                        Administrator?
+                        <a href="{{ route('admin.login') }}" class="font-semibold text-blue-900 transition hover:text-blue-700">Masuk melalui portal admin</a>
+                    </p>
+
                     <a href="{{ route('home') }}" class="mt-6 block text-center text-xs font-semibold text-slate-400 transition hover:text-blue-900">
                         &larr; Kembali ke beranda
                     </a>

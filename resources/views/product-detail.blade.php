@@ -3,128 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $product->name }} - Planet Ban</title>
+    <meta name="theme-color" content="#f8fafc">
+    <title>{{ $product->name }} | Planet Ban</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="flex min-h-screen flex-col bg-white font-sans text-slate-800 antialiased" x-data="planetBanApp" x-effect="document.body.classList.toggle('overflow-hidden', cartDrawerOpen || bookingModalOpen)" @keydown.escape.window="closeOverlays()">
-
-    <!-- Notifikasi Flash Sukses -->
+<body
+    class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased"
+    x-data="planetBanApp"
+    x-effect="document.body.classList.toggle('overflow-hidden', cartDrawerOpen || bookingModalOpen)"
+    @keydown.escape.window="closeOverlays()"
+>
     @if(session('success'))
-    <div class="bg-blue-600 text-white text-center py-3 px-4 font-bold shadow-md sticky top-0 z-50 flex justify-between items-center">
-        <span>✨ {{ session('success') }}</span>
-        <button onclick="this.parentElement.remove()" class="text-white font-bold ml-4 text-xl">&times;</button>
-    </div>
+        <div role="status" class="relative z-[80] flex items-center justify-center gap-3 bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-white">
+            <span>{{ session('success') }}</span>
+            <button type="button" @click="$el.parentElement.remove()" class="text-xl leading-none" aria-label="Tutup notifikasi">&times;</button>
+        </div>
     @endif
 
-    <!-- Navbar Utama -->
-    <header class="bg-white shadow-xs sticky top-0 z-40 border-b border-gray-100">
-        <div class="container mx-auto px-4 md:px-12 py-3 flex justify-between items-center">
-            <a href="/home" class="flex items-center gap-2">
-                <div class="bg-blue-900 text-white font-black italic px-3 py-1 rounded-lg tracking-wider text-lg shadow">
-                    PLANET <span class="text-yellow-400">BAN</span>
-                </div>
+    <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
+        <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2" aria-label="Planet Ban, beranda">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-950 text-lg font-black italic text-yellow-300 shadow-sm">P</span>
+                <span class="text-lg font-black italic tracking-tight text-blue-950">PLANET<span class="text-blue-600">BAN</span></span>
             </a>
-            
-            <nav class="hidden lg:flex items-center space-x-8 font-semibold text-sm text-gray-700">
-                <a href="/home" class="hover:text-blue-600 transition">Servis</a>
-                <a href="/home#katalog" class="hover:text-blue-600 transition">Ban Motor</a>
-                <a href="/home#katalog" class="hover:text-blue-600 transition">Oli Motor</a>
-                <a href="/home#katalog" class="hover:text-blue-600 transition">Sparepart</a>
-                <a href="/home#toko" class="hover:text-blue-600 transition">Lokasi Toko</a>
-                <a href="{{ route('booking.status') }}" class="text-blue-900 font-bold hover:underline">Cek Status Pesanan</a>
+            <nav class="hidden items-center gap-7 text-sm font-semibold text-slate-600 lg:flex" aria-label="Navigasi utama">
+                <a class="detail-nav-link" href="{{ route('home') }}#layanan">Layanan</a>
+                <a class="detail-nav-link" href="{{ route('home') }}#katalog">Ban & produk</a>
+                <a class="detail-nav-link" href="{{ route('stores.index') }}">Lokasi outlet</a>
+                <a class="detail-nav-link" href="{{ route('booking.status') }}">Cek booking</a>
             </nav>
-
-            <div class="flex items-center space-x-4">
-                <!-- Ikon Keranjang Belanja -->
-                <button type="button" @click="cartDrawerOpen = true" class="relative rounded-xl p-2 text-gray-700 transition hover:bg-blue-50 hover:text-blue-900" title="Keranjang Belanja" :aria-label="'Keranjang, ' + cartCount + ' produk'">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                    <span x-show="cartCount > 0" x-text="cartCount" class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white"></span>
+            <div class="flex items-center gap-2">
+                @include('components.account-menu')
+                <button
+                    type="button"
+                    @click="cartDrawerOpen = true"
+                    class="relative flex h-10 items-center gap-2 rounded-full bg-blue-950 px-4 text-sm font-bold text-white transition hover:bg-blue-800 active:scale-95"
+                    :aria-label="'Keranjang, ' + cartCount + ' produk'"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l2.2 11.1a2 2 0 002 1.6h8.7a2 2 0 001.9-1.4L22 8H6M10 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+                    <span class="hidden sm:inline">Keranjang</span>
+                    <span x-show="cartCount > 0" x-text="cartCount" x-transition class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 px-1 text-[10px] font-black text-blue-950"></span>
                 </button>
-
-                @auth
-                    <a href="{{ route('account.dashboard') }}" class="rounded-xl p-2 text-gray-700 transition hover:bg-blue-50 hover:text-blue-900" title="Akun saya" aria-label="Akun saya">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="rounded-xl p-2 text-gray-700 transition hover:bg-blue-50 hover:text-blue-900" title="Masuk ke akun" aria-label="Masuk ke akun">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                    </a>
-                @endauth
             </div>
         </div>
     </header>
 
-    <!-- Breadcrumb Navigasi -->
-    <div class="container mx-auto px-4 md:px-12 py-4 text-xs text-gray-500 flex items-center gap-2">
-        <a href="/home" class="hover:underline">Katalog Produk</a>
-        <span>/</span>
-        <span class="text-gray-800 font-bold uppercase">{{ $product->name }}</span>
-    </div>
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 pb-20 pt-5 sm:px-6 lg:px-8 lg:pt-8">
+        <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
+            <a href="{{ route('home') }}" class="transition hover:text-blue-900">Home</a><span aria-hidden="true">/</span>
+            <a href="{{ route('home') }}#katalog" class="transition hover:text-blue-900">Ban</a><span aria-hidden="true">/</span>
+            <span class="font-semibold uppercase text-slate-600">PRESA</span><span aria-hidden="true">/</span>
+            <span class="max-w-[18rem] truncate font-bold uppercase text-slate-900" aria-current="page">{{ $product->name }}</span>
+        </nav>
 
-    <!-- Konten Detail Produk -->
-    <main class="container mx-auto px-4 md:px-12 py-6 flex-grow max-w-7xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            
-            <!-- SISI KIRI: Gambar Produk -->
-            <div class="space-y-4">
-                <div class="relative flex h-[320px] items-center justify-center overflow-hidden rounded-3xl border border-slate-100 bg-slate-50 p-8 shadow-sm sm:h-[420px]">
-                    <span class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded uppercase tracking-wider shadow">
-                        Promo Resmi
-                    </span>
-                    @if($product->image)
-                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="h-full w-full object-contain">
-                    @else
-                        <span class="text-8xl sm:text-9xl" aria-hidden="true">🛵</span>
+        <section class="grid items-start gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(360px,.96fr)] lg:gap-12">
+            <div x-data="productGallery(@js($galleryImages))" class="min-w-0">
+                <div
+                    class="product-gallery-stage group relative flex h-[340px] items-center justify-center overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-7 shadow-sm sm:h-[500px] sm:p-10"
+                    @mousemove="trackZoom($event)"
+                    @mouseenter="zooming = true"
+                    @mouseleave="zooming = false"
+                    @keydown.arrow-left.prevent="move(-1)"
+                    @keydown.arrow-right.prevent="move(1)"
+                    tabindex="0"
+                    aria-label="Galeri foto produk. Gunakan tombol panah kiri atau kanan."
+                >
+                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgba(191,219,254,.35),transparent_58%)]"></div>
+                    <img
+                        :src="activeImage"
+                        alt="{{ $product->name }}"
+                        class="product-gallery-image relative z-10 h-full w-full object-contain drop-shadow-[0_24px_28px_rgba(15,23,42,.16)]"
+                        :class="zooming && 'is-zooming'"
+                        :style="zooming ? `transform: scale(1.38); transform-origin: ${zoomX}% ${zoomY}%` : ''"
+                        fetchpriority="high"
+                    >
+                    @if($product->has_discount)
+                        <span class="absolute left-5 top-5 z-20 rounded-full bg-rose-600 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white shadow-sm">Hemat {{ $product->discount_percentage }}%</span>
+                    @endif
+                    <span class="absolute bottom-5 right-5 z-20 rounded-full border border-white/80 bg-white/85 px-3 py-1.5 text-[10px] font-bold text-slate-600 shadow-sm backdrop-blur">Geser kursor untuk zoom</span>
+
+                    <button
+                        type="button"
+                        @click="move(-1)"
+                        :disabled="images.length < 2"
+                        class="gallery-arrow absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-900 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label="Foto sebelumnya"
+                    >
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/></svg>
+                    </button>
+                    <button
+                        type="button"
+                        @click="move(1)"
+                        :disabled="images.length < 2"
+                        class="gallery-arrow absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-900 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label="Foto berikutnya"
+                    >
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                </div>
+
+                <div class="mt-4 flex gap-3 overflow-x-auto pb-2" aria-label="Pilih foto produk">
+                    <template x-for="(image, index) in images" :key="image">
+                        <button
+                            type="button"
+                            @click="select(index)"
+                            class="gallery-thumbnail relative h-[76px] w-[76px] shrink-0 overflow-hidden rounded-xl border-2 bg-white p-2 transition hover:border-blue-300 sm:h-[88px] sm:w-[88px]"
+                            :class="activeIndex === index ? 'border-blue-900 ring-2 ring-blue-100' : 'border-slate-200'"
+                            :aria-label="'Pilih foto ' + (index + 1)"
+                            :aria-pressed="activeIndex === index"
+                        >
+                            <img :src="image" alt="" class="h-full w-full object-contain">
+                        </button>
+                    </template>
+                    @if($galleryImages->count() <= 1)
+                        <p class="self-center pl-1 text-[11px] leading-5 text-slate-500">Foto tambahan produk dapat diatur melalui data galeri produk.</p>
                     @endif
                 </div>
             </div>
 
-            <!-- SISI KANAN: Informasi & Tombol Pemesanan / Pembayaran -->
-            <div class="space-y-6">
-                <div>
-                    <span class="text-xs font-bold text-blue-900 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md inline-block mb-3">
-                        Kategori: {{ $product->category }}
-                    </span>
-                    <h1 class="text-2xl md:text-3xl font-black text-gray-900 leading-snug mb-3">
-                        {{ $product->name }}
-                    </h1>
-                    
-                    <div class="flex items-center gap-4 text-xs text-gray-500 mb-6">
-                        <span>Belum Ada Ulasan</span>
-                        <span>•</span>
-                        <span>Stok Tersedia: <strong class="text-gray-800">{{ $product->stock }} Pcs</strong></span>
-                        <span>•</span>
-                        <span>SKU: 09{{ $product->id }}</span>
-                    </div>
-
-                    <!-- Harga Produk -->
-                    <div class="text-3xl md:text-4xl font-black text-gray-900 mb-6">
-                        @if ($product->has_discount)
-                            <span class="mb-2 inline-flex rounded-full bg-red-600 px-3 py-1 text-xs font-black uppercase tracking-wider text-white">Hemat {{ $product->discount_percentage }}%</span>
-                            <span class="block text-lg font-semibold text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                        @endif
-                        <span class="block">Rp {{ number_format($product->effective_price, 0, ',', '.') }}</span>
-                    </div>
+            <div class="product-detail-panel rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7 lg:p-8">
+                <div class="mb-4 flex flex-wrap items-center gap-2">
+                    <span class="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.14em] text-blue-900">{{ $product->category === 'tire' ? 'PRESA · BAN MOTOR' : strtoupper($product->category) }}</span>
+                    @if($product->stock > 0 && $product->stock <= 5)
+                        <span class="rounded-full bg-amber-50 px-3 py-1.5 text-[10px] font-extrabold text-amber-800">Stok terbatas</span>
+                    @endif
                 </div>
 
-                <div class="rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm text-blue-950">
-                    Harga dan ketersediaan produk akan dikonfirmasi kembali oleh outlet pilihan Anda.
+                <h1 class="text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-3xl">{{ $product->name }}</h1>
+                <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-500">
+                    <span class="inline-flex items-center gap-1.5"><span class="text-amber-400" aria-hidden="true">★★★★★</span><span>Belum ada ulasan</span></span>
+                    <span class="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
+                    <span>{{ number_format($soldCount) }} terjual</span>
+                    <span class="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
+                    <span>SKU: <strong class="font-bold text-slate-700">PB-{{ str_pad((string) $product->id, 5, '0', STR_PAD_LEFT) }}</strong></span>
                 </div>
 
-                <!-- Tombol Aksi: Pesan / Pembayaran & Tambah Keranjang -->
-                <div class="space-y-3 pt-2">
-                    <!-- Tombol Pesan / Pembayaran Langsung -->
-                    <button type="button" @click="openBookingModal('{{ $product->id }}')" class="block w-full rounded-2xl bg-blue-950 px-6 py-4 text-center text-base font-extrabold text-white shadow-md transition hover:bg-blue-900 hover:shadow-lg">
-                        Pilih & Booking
+                <div class="my-6 border-t border-slate-100"></div>
+
+                <div class="flex flex-wrap items-end gap-x-3 gap-y-2">
+                    <p class="text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">Rp {{ number_format($product->effective_price, 0, ',', '.') }}</p>
+                    @if($product->has_discount)
+                        <p class="pb-1 text-sm font-semibold text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                        <span class="mb-1 rounded-full bg-rose-50 px-2.5 py-1 text-[10px] font-black text-rose-700">Hemat {{ $product->discount_percentage }}%</span>
+                    @endif
+                </div>
+                <p class="mt-2 text-xs text-slate-500">Harga dan ketersediaan dikonfirmasi kembali oleh outlet pilihan Anda.</p>
+
+                <div class="mt-7">
+                    <h2 class="mb-3 text-xs font-black uppercase tracking-[.15em] text-slate-500">Spesifikasi produk</h2>
+                    <dl class="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                        <div class="spec-tile"><dt>Ukuran ban</dt><dd>{{ $tireSize ?? 'Lihat deskripsi' }}</dd></div>
+                        <div class="spec-tile"><dt>Posisi ban</dt><dd>Depan / belakang</dd></div>
+                        <div class="spec-tile"><dt>Diameter velg</dt><dd>{{ $tireSize ? substr($tireSize, strrpos($tireSize, '-') + 1) . '"' : '—' }}</dd></div>
+                        <div class="spec-tile"><dt>Tipe</dt><dd>{{ str_contains(strtolower($product->name), 'tubeless') ? 'Tubeless' : '—' }}</dd></div>
+                        <div class="spec-tile"><dt>Kategori</dt><dd>{{ ucfirst($product->category) }}</dd></div>
+                        <div class="spec-tile"><dt>Ketersediaan</dt><dd class="{{ $product->stock > 0 ? 'text-emerald-700' : 'text-rose-700' }}">{{ $product->stock > 0 ? $product->stock . ' pcs' : 'Stok habis' }}</dd></div>
+                    </dl>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <button
+                        type="button"
+                        @click="openBookingModal('{{ $product->id }}')"
+                        class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-blue-950 px-4 py-3 text-sm font-extrabold text-blue-950 transition hover:bg-blue-50 active:scale-[.97]"
+                    >
+                        Beli Langsung
+                        <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
                     </button>
-
-                    <!-- Tombol Tambah ke Keranjang -->
                     <button
                         type="button"
                         @click="addToCartFromButton($el)"
@@ -134,123 +179,172 @@
                         data-product-image="{{ $product->image }}"
                         data-product-stock="{{ $product->stock }}"
                         :disabled="{{ $product->stock < 1 ? 'true' : 'false' }}"
-                        class="block w-full rounded-2xl bg-yellow-400 px-6 py-3.5 text-center text-sm font-bold text-blue-950 shadow transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-950 px-4 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-800 hover:shadow-md active:scale-[.97] disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        {{ $product->stock > 0 ? 'Tambah ke Keranjang' : 'Stok Habis' }}
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l2.2 11.1a2 2 0 002 1.6h8.7a2 2 0 001.9-1.4L22 8H6M10 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+                        + Keranjang
                     </button>
-
-                    <a href="https://wa.me/628170006055?text={{ urlencode('Halo Planet Ban, saya tertarik dengan produk ' . $product->name) }}" target="_blank" rel="noopener noreferrer" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow transition text-center block text-sm">
-                        💬 Tanya CS via WhatsApp
-                    </a>
                 </div>
-
-                <!-- Deskripsi Produk -->
-                <div class="border-t border-gray-200 pt-6 space-y-4">
-                    <h3 class="font-black text-gray-900 text-base">Deskripsi</h3>
-                    <div class="text-gray-600 text-sm leading-relaxed space-y-3">
-                        <p>{{ $product->description }}</p>
-                        <p class="font-semibold text-gray-800">Keunggulan produk dan servis di Planet Ban:</p>
-                        <ul class="list-disc pl-5 space-y-1 text-xs">
-                            <li>Komponen berkualitas tinggi dan teruji resmi.</li>
-                            <li>Performa kendaraan menjadi lebih optimal dan bertenaga.</li>
-                            <li>Pemasangan langsung ditangani oleh teknisi profesional di outlet terdekat.</li>
-                        </ul>
-                    </div>
+                <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-100 pt-4 text-[11px] font-semibold text-slate-500">
+                    <span class="inline-flex items-center gap-1.5"><span class="text-emerald-600">✓</span> Produk original</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="text-emerald-600">✓</span> Bisa dipasang di outlet</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="text-emerald-600">✓</span> Bantuan mekanik</span>
                 </div>
-
             </div>
-        </div>
+        </section>
 
-        <!-- Produk Terkait -->
-        @if($relatedProducts->count() > 0)
-        <div class="mt-24 border-t border-gray-200 pt-12">
-            <h3 class="text-xl font-black text-gray-900 mb-6">Produk Pilihan Lainnya</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($relatedProducts as $rel)
-                <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-xs hover:shadow-xl transition flex flex-col justify-between">
-                    <div>
-                        <div class="h-36 bg-gray-50 rounded-xl mb-4 flex items-center justify-center text-4xl">🛵</div>
-                        <span class="text-[10px] text-blue-900 font-bold uppercase tracking-wider block mb-1">{{ $rel->category }}</span>
-                        <h4 class="font-extrabold text-gray-900 text-sm mb-2 line-clamp-2">{{ $rel->name }}</h4>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
-                        <span class="font-black text-blue-900 text-sm">Rp {{ number_format($rel->effective_price, 0, ',', '.') }}</span>
-                        <a href="{{ route('product.show', $rel->id) }}" class="text-xs font-bold bg-blue-50 text-blue-900 px-3 py-2 rounded-xl hover:bg-blue-100">Detail</a>
-                    </div>
-                </div>
-                @endforeach
+        <section x-data="{ activeTab: 'compatibility', fitmentOpen: true }" class="mt-10 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm sm:mt-14">
+            <div class="flex border-b border-slate-200 px-4 sm:px-7">
+                <button type="button" @click="activeTab = 'compatibility'" :aria-selected="activeTab === 'compatibility'" class="detail-tab" :class="activeTab === 'compatibility' && 'detail-tab-active'">Kompatibilitas</button>
+                <button type="button" @click="activeTab = 'reviews'" :aria-selected="activeTab === 'reviews'" class="detail-tab" :class="activeTab === 'reviews' && 'detail-tab-active'">Ulasan Produk <span class="ml-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">0</span></button>
             </div>
-        </div>
+
+            <div x-show="activeTab === 'compatibility'" x-transition class="p-5 sm:p-7">
+                <button type="button" @click="fitmentOpen = !fitmentOpen" :aria-expanded="fitmentOpen" class="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/50">
+                    <span><span class="block text-sm font-extrabold text-slate-900">Ban ini cocok untuk motor</span><span class="mt-1 block text-xs text-slate-500">{{ $tireSize ? 'Ukuran acuan: ' . $tireSize : 'Konfirmasi ukuran sebelum pemasangan' }}</span></span>
+                    <svg class="h-5 w-5 shrink-0 text-slate-500 transition-transform" :class="fitmentOpen && 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div x-show="fitmentOpen" x-transition class="pt-4">
+                    @if($compatibleMotorcycles->isNotEmpty())
+                        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            @foreach($compatibleMotorcycles as $motorcycle)
+                                <article class="fitment-card flex items-center gap-3 rounded-xl border border-slate-200 p-4">
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-900"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 17 4-7h4l4 7m-8-7-2-3h4m-3 5h6"/></svg></span>
+                                    <span><strong class="block text-sm text-slate-800">{{ $motorcycle->brand }}</strong><span class="mt-1 block text-xs text-slate-500">{{ $motorcycle->model_name }}</span></span>
+                                </article>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5">
+                            <p class="text-sm font-bold text-slate-800">Periksa ukuran ban motor sebelum memilih.</p>
+                            <p class="mt-1 text-xs leading-5 text-slate-500">Data motor yang cocok belum tersedia untuk ukuran {{ $tireSize ?? 'produk ini' }}. Contoh merek untuk diverifikasi: Piaggio dan Vespa. Pastikan ukuran ban depan/belakang sesuai dengan rekomendasi pabrikan.</p>
+                        </div>
+                    @endif
+                    <p class="mt-4 text-[11px] leading-5 text-slate-500">Kecocokan bergantung pada ukuran ban dan posisi yang direkomendasikan untuk motor Anda. Konfirmasikan kembali dengan mekanik Planet Ban sebelum pemasangan.</p>
+                </div>
+            </div>
+
+            <div x-cloak x-show="activeTab === 'reviews'" x-transition class="p-5 sm:p-7">
+                <div class="rounded-2xl bg-slate-50 px-6 py-10 text-center">
+                    <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white text-amber-400 shadow-sm" aria-hidden="true">★</span>
+                    <h2 class="mt-4 text-sm font-extrabold text-slate-900">Belum ada ulasan</h2>
+                    <p class="mx-auto mt-2 max-w-md text-xs leading-5 text-slate-500">Jadilah pelanggan pertama yang berbagi pengalaman setelah mencoba produk ini.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+            <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-[.18em] text-blue-800">Tentang produk</p>
+                    <h2 class="mt-2 text-xl font-black text-slate-950">Deskripsi & fitur</h2>
+                    <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{{ $product->description ?: 'Ban tubeless untuk mendukung kenyamanan dan kestabilan berkendara. Pastikan ukuran serta posisi pemasangan sesuai rekomendasi kendaraan Anda.' }}</p>
+                    <ul class="mt-5 grid gap-3 text-xs leading-5 text-slate-600 sm:grid-cols-2">
+                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Konstruksi tubeless membantu mengurangi risiko kehilangan tekanan secara mendadak saat terjadi kebocoran kecil.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Desain tapak mendukung grip dan kestabilan saat berkendara di kondisi jalan yang sesuai.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Kompon dan konstruksi dirancang untuk penggunaan harian; tekanan ban tetap perlu diperiksa secara berkala.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Pemasangan dan pemeriksaan dapat dilakukan oleh teknisi di outlet Planet Ban.</span></li>
+                    </ul>
+                </div>
+                <div class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 md:min-w-56">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-blue-800">Standar produk</p>
+                    <p class="mt-2 text-sm font-extrabold text-slate-900">Nomor SNI</p>
+                    <p class="mt-1 text-xs leading-5 text-slate-600">{{ $product->sni_number ?: 'Periksa nomor SNI resmi pada dinding ban atau label kemasan produk.' }}</p>
+                </div>
+            </div>
+        </section>
+
+        @if($relatedProducts->isNotEmpty())
+            <section class="mt-14">
+                <div class="mb-5 flex items-end justify-between gap-4">
+                    <div><p class="text-[10px] font-black uppercase tracking-[.18em] text-blue-800">Jelajahi katalog</p><h2 class="mt-2 text-xl font-black text-slate-950">Produk sejenis</h2></div>
+                    <a href="{{ route('home') }}#katalog" class="text-xs font-bold text-blue-900 transition hover:text-blue-600">Lihat katalog →</a>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach($relatedProducts as $relatedProduct)
+                        <article class="related-product-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                            <div class="flex h-36 items-center justify-center overflow-hidden rounded-xl bg-slate-50 p-4">
+                                @if($relatedProduct->image)
+                                    <img src="{{ $relatedProduct->image }}" alt="{{ $relatedProduct->name }}" loading="lazy" class="h-full w-full object-contain">
+                                @else
+                                    <span class="text-5xl" aria-hidden="true">🛞</span>
+                                @endif
+                            </div>
+                            <span class="mt-4 block text-[9px] font-black uppercase tracking-wider text-blue-800">{{ $relatedProduct->category }}</span>
+                            <h3 class="mt-1 line-clamp-2 min-h-10 text-sm font-extrabold text-slate-900">{{ $relatedProduct->name }}</h3>
+                            <div class="mt-3 flex items-center justify-between gap-2">
+                                <span class="text-sm font-black text-blue-950">Rp {{ number_format($relatedProduct->effective_price, 0, ',', '.') }}</span>
+                                <a href="{{ route('product.show', $relatedProduct->id) }}" class="rounded-lg bg-blue-50 px-3 py-2 text-[10px] font-bold text-blue-900 transition hover:bg-blue-100">Detail</a>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </section>
         @endif
     </main>
 
     <x-cart-drawer />
 
-    <!-- Modal Form Pemesanan & Pembayaran -->
-    <div x-show="bookingModalOpen" x-transition.opacity @click.self="closeOverlays()" class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" style="display: none;">
-        <div x-transition:enter="transform transition ease-out duration-300"
-             x-transition:enter-start="translate-y-4 scale-95 opacity-0"
-             x-transition:enter-end="translate-y-0 scale-100 opacity-100"
-             x-transition:leave="transform transition ease-in duration-200"
-             x-transition:leave-start="translate-y-0 scale-100 opacity-100"
-             x-transition:leave-end="translate-y-4 scale-95 opacity-0"
-             class="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-8">
-            <button type="button" @click="closeOverlays()" :disabled="isLoading" class="absolute right-5 top-5 text-2xl font-bold text-gray-400 transition hover:text-gray-700 disabled:opacity-50" aria-label="Tutup form booking">&times;</button>
-            
-            <h3 class="text-2xl font-black text-gray-900 mb-1">Form Booking Produk & Servis</h3>
-            <p class="text-xs text-gray-500 mb-6">Isi detail untuk mengatur jadwal pemasangan produk di outlet.</p>
+    <div x-cloak x-show="bookingModalOpen" x-transition.opacity @click.self="closeOverlays()" class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" style="display: none;">
+        <section
+            x-transition:enter="transform transition ease-out duration-300"
+            x-transition:enter-start="translate-y-4 scale-95 opacity-0"
+            x-transition:enter-end="translate-y-0 scale-100 opacity-100"
+            x-transition:leave="transform transition ease-in duration-200"
+            x-transition:leave-start="translate-y-0 scale-100 opacity-100"
+            x-transition:leave-end="translate-y-4 scale-95 opacity-0"
+            class="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-booking-title"
+        >
+            <button type="button" @click="closeOverlays()" :disabled="isLoading" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50" aria-label="Tutup form booking">&times;</button>
+            <p class="text-[10px] font-black uppercase tracking-[.18em] text-blue-800">Atur jadwal kunjungan</p>
+            <h2 id="product-booking-title" class="mt-2 pr-8 text-2xl font-black text-slate-950">Booking produk & servis</h2>
+            <p class="mb-6 mt-2 text-sm text-slate-500">Pilih outlet dan waktu yang paling nyaman untuk Anda.</p>
 
             <form action="{{ route('booking.store') }}" method="POST" @submit.prevent="submitForm($event)" class="space-y-4">
                 @csrf
                 <input type="hidden" name="product_id" :value="selectedProductId || '{{ $product->id }}'">
-                
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Lengkap</label>
-                    <input type="text" name="customer_name" required placeholder="Nama Anda" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 focus:outline-none">
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="block text-xs font-bold text-slate-700">Nama lengkap<input type="text" name="customer_name" value="{{ old('customer_name', Auth::user()?->name) }}" required maxlength="255" placeholder="Nama Anda" class="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10"></label>
+                    <label class="block text-xs font-bold text-slate-700">No. WhatsApp / HP<input type="tel" name="customer_phone" value="{{ old('customer_phone', Auth::user()?->phone) }}" required maxlength="20" placeholder="081234567890" class="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10"></label>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">No. WhatsApp / HP</label>
-                    <input type="tel" name="customer_phone" required placeholder="081234567890" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Outlet Cabang</label>
-                    <select name="store_id" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 focus:outline-none">
-                        <option value="">-- Pilih Cabang Outlet --</option>
+                <label class="block text-xs font-bold text-slate-700">Pilih outlet cabang
+                    <select name="store_id" required class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10">
+                        <option value="">Pilih lokasi outlet</option>
                         @foreach($stores as $store)
-                        <option value="{{ $store->id }}">{{ $store->name }} ({{ $store->city }})</option>
+                            <option value="{{ $store->id }}">{{ $store->name }} ({{ $store->city }})</option>
                         @endforeach
                     </select>
-                </div>
-
+                </label>
+                <div class="rounded-xl bg-blue-50 px-4 py-3 text-xs text-blue-950"><span class="font-bold">Produk:</span> {{ $product->name }} · Rp {{ number_format($product->effective_price, 0, ',', '.') }}</div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Tanggal Kunjungan</label>
-                        <input type="date" name="booking_date" required min="{{ date('Y-m-d') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Jam</label>
-                        <select name="booking_time" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 focus:outline-none">
-                            <option value="09:00">09:00 WIB</option>
-                            <option value="13:00">13:00 WIB</option>
-                            <option value="16:00">16:00 WIB</option>
+                    <label class="block text-xs font-bold text-slate-700">Tanggal kunjungan<input type="date" name="booking_date" required min="{{ date('Y-m-d') }}" value="{{ old('booking_date') }}" class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10"></label>
+                    <label class="block text-xs font-bold text-slate-700">Jam kunjungan
+                        <select name="booking_time" required class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10">
+                            @foreach(['09:00', '11:00', '13:00', '15:00', '17:00'] as $time)
+                                <option value="{{ $time }}" @selected(old('booking_time', '09:00') === $time)>{{ $time }} WIB</option>
+                            @endforeach
                         </select>
-                    </div>
+                    </label>
                 </div>
-
                 @include('components.payment-method-options')
-
-                <div class="pt-4 flex justify-end gap-3">
-                    <button type="button" @click="closeOverlays()" :disabled="isLoading" class="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 disabled:opacity-50">Batal</button>
-                    <button type="submit" :disabled="isLoading" class="flex items-center justify-center gap-2 rounded-xl bg-blue-950 px-6 py-2.5 text-sm font-bold text-white shadow transition hover:bg-blue-900 disabled:cursor-wait disabled:opacity-70">
-                        <svg x-show="isLoading" class="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span x-text="isLoading ? 'Mengirim...' : 'Konfirmasi Booking'"></span>
+                @if($errors->any())
+                    <div role="alert" class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        <p class="font-bold">Periksa kembali data booking.</p>
+                        <ul class="mt-1 list-inside list-disc">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                    </div>
+                @endif
+                <div class="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+                    <button type="button" @click="closeOverlays()" :disabled="isLoading" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50">Batal</button>
+                    <button type="submit" :disabled="isLoading" class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-950 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-800 active:scale-95 disabled:cursor-wait disabled:opacity-60">
+                        <svg x-show="isLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 4 0 5.373 0 12h4z"></path></svg>
+                        <span x-text="isLoading ? 'Mengirim...' : 'Konfirmasi booking'">Konfirmasi booking</span>
                     </button>
                 </div>
             </form>
-        </div>
+        </section>
     </div>
 
     @include('components.site-footer')

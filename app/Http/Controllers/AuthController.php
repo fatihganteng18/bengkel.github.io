@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\View\View;
 
@@ -41,6 +42,42 @@ class AuthController extends Controller
             : redirect()->route('home');
     }
 
+    public function showAdminLogin(): View|RedirectResponse
+    {
+        if (Auth::check()) {
+            return Auth::user()?->role === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('home');
+        }
+
+        return view('auth.admin-login');
+    }
+
+    public function loginAdmin(Request $request): RedirectResponse
+    {
+        if (Auth::check()) {
+            return Auth::user()?->role === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('home');
+        }
+
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+        $credentials['email'] = Str::lower($credentials['email']);
+
+        if (! Auth::attempt($credentials + ['role' => 'admin'], $request->boolean('remember'))) {
+            return back()
+                ->withErrors(['email' => 'Email atau kata sandi admin tidak sesuai.'])
+                ->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->route('admin.dashboard');
+    }
+
     public function showRegister(): View
     {
         return view('auth.register');
@@ -48,16 +85,27 @@ class AuthController extends Controller
 
     public function register(Request $request): RedirectResponse
     {
+        $request->merge([
+            'email' => Str::lower((string) $request->input('email')),
+        ]);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::notIn(['admin@gmail.com', Str::lower((string) config('planetban.admin.email'))]),
+                'unique:users,email',
+            ],
             'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+() -]{8,20}$/', 'unique:users,phone'],
             'password' => ['required', 'confirmed', PasswordRule::min(8)->letters()->numbers()],
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
-            'email' => Str::lower($validated['email']),
+            'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
         ]);
@@ -65,7 +113,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('account.dashboard')
+        return redirect()->route('home')
             ->with('success', 'Akun berhasil dibuat. Selamat datang di Planet Ban!');
     }
 

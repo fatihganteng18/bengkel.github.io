@@ -29,7 +29,7 @@ class AccountAuthenticationTest extends TestCase
 
         $user = User::where('email', 'ayu@example.com')->firstOrFail();
 
-        $response->assertRedirect(route('account.dashboard'));
+        $response->assertRedirect(route('home'));
         $this->assertAuthenticatedAs($user);
         $this->assertSame('+62 812-3456-7890', $user->phone);
         $this->assertSame('user', $user->role);
@@ -52,6 +52,24 @@ class AccountAuthenticationTest extends TestCase
         $this->assertDatabaseCount('users', 0);
     }
 
+    public function test_registration_cannot_claim_a_reserved_admin_email_in_any_case(): void
+    {
+        foreach (['ADMIN@GMAIL.COM', 'ADILLAHALFARIS@GMAIL.COM'] as $email) {
+            $this->from(route('register'))
+                ->post(route('register.store'), [
+                    'name' => 'Impersonator',
+                    'email' => $email,
+                    'phone' => '08123456789',
+                    'password' => 'planetban123',
+                    'password_confirmation' => 'planetban123',
+                ])
+                ->assertRedirect(route('register'))
+                ->assertSessionHasErrors('email');
+        }
+
+        $this->assertDatabaseCount('users', 0);
+    }
+
     public function test_a_customer_can_sign_in_and_sign_out(): void
     {
         $user = User::factory()->create([
@@ -70,6 +88,29 @@ class AccountAuthenticationTest extends TestCase
             ->assertRedirect(route('home'));
 
         $this->assertGuest();
+    }
+
+    public function test_signed_in_customer_sees_account_menu_and_guest_sees_sign_in_link(): void
+    {
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee(route('login'), false)
+            ->assertSee('Masuk');
+
+        $user = User::factory()->create([
+            'name' => 'Ayu Rider',
+            'email' => 'ayu@example.com',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('home'))
+            ->assertOk()
+            ->assertSee('Ayu Rider')
+            ->assertSee('ayu@example.com')
+            ->assertSee(route('account.dashboard'), false)
+            ->assertSee(route('logout'), false)
+            ->assertSee('Akun saya')
+            ->assertSee('Keluar');
     }
 
     public function test_the_customer_dashboard_only_shows_the_signed_in_users_bookings(): void
