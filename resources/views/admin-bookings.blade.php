@@ -67,7 +67,11 @@
                                 <span class="text-xs text-gray-500 block">{{ $b->store->city ?? '' }}</span>
                             </td>
                             <td class="py-4 px-6">
-                                <span class="font-medium text-gray-800">{{ $b->product->name ?? 'Servis Umum / Tanpa Produk' }}</span>
+                                @forelse($b->items as $item)
+                                    <span class="block font-medium text-gray-800">{{ $item->product_name }} <span class="text-xs text-gray-500">× {{ $item->quantity }}</span></span>
+                                @empty
+                                    <span class="font-medium text-gray-800">{{ $b->product->name ?? 'Servis Umum / Tanpa Produk' }}</span>
+                                @endforelse
                             </td>
                             <td class="py-4 px-6 text-xs">
                                 <span class="font-bold block text-gray-900">📅 {{ $b->booking_date }}</span>
@@ -87,7 +91,7 @@
                                         {{ $b->payment->status }}
                                     </span>
                                     @if ($b->payment->amount !== null)
-                                        <span class="mt-1 block text-gray-500">Produk: Rp {{ number_format((float) $b->payment->amount, 0, ',', '.') }}</span>
+                                        <span class="mt-1 block text-gray-500">Total produk: Rp {{ number_format((float) $b->payment->amount, 0, ',', '.') }}</span>
                                     @else
                                         <span class="mt-1 block text-gray-500">Nilai servis dikonfirmasi outlet</span>
                                     @endif

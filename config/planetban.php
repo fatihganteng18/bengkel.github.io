@@ -2,7 +2,11 @@
 
 return [
     'admin' => [
-        'email' => env('ADMIN_EMAIL', 'adillahalfaris@gmail.com'),
+        'email' => 'admin@gmail.com',
         'password' => env('ADMIN_PASSWORD'),
+    ],
+    'cashier' => [
+        'email' => 'kasir@planetban.com',
+        'password' => env('CASHIER_PASSWORD'),
     ],
 ];

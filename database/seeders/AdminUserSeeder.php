@@ -27,7 +27,7 @@ class AdminUserSeeder extends Seeder
         $admin->forceFill([
             'name' => 'Planet Ban Admin',
             'password' => Hash::make($password),
-            'role' => 'admin',
+            'role' => User::ROLE_ADMIN,
         ])->save();
     }
 }

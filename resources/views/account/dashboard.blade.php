@@ -99,6 +99,9 @@
                         <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 border-t border-slate-100 pt-4 text-sm text-slate-500">
                             <span><strong class="font-semibold text-slate-700">Tanggal:</strong> {{ $booking->booking_date }}</span>
                             <span><strong class="font-semibold text-slate-700">Jam:</strong> {{ $booking->booking_time }} WIB</span>
+                            @if ($booking->serviceQueue)
+                                <span><strong class="font-semibold text-slate-700">Antrean:</strong> {{ $booking->serviceQueue->queue_code }} · {{ $booking->serviceQueue->status === 'in_service' ? 'Sedang dikerjakan' : ($booking->serviceQueue->status === 'completed' ? 'Selesai' : 'Menunggu') }}</span>
+                            @endif
                         </div>
                     </article>
                 @empty

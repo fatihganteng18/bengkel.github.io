@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CashierPanelController;
 use App\Http\Controllers\PlanetBanController;
+use App\Http\Controllers\ServiceQueueDisplayController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -31,11 +33,14 @@ Route::get('/', [PlanetBanController::class, 'index']);
 Route::get('/home', [PlanetBanController::class, 'index'])->name('home');
 Route::get('/product/{id}', [PlanetBanController::class, 'showProduct'])->name('product.show');
 
-Route::post('/booking', [PlanetBanController::class, 'storeBooking'])->name('booking.store');
+Route::post('/booking', [PlanetBanController::class, 'storeBooking'])
+    ->middleware('auth')
+    ->name('booking.store');
 Route::get('/booking', function () {
     return redirect('/home');
 });
 Route::get('/booking/status', [PlanetBanController::class, 'bookingStatus'])->name('booking.status');
+Route::get('/antrean', ServiceQueueDisplayController::class)->name('queues.display');
 
 // Tambahkan rute ini di Area User (routes/web.php)
 Route::get('/stores', [PlanetBanController::class, 'storeLocations'])->name('stores.index');
@@ -65,4 +70,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/bookings/{booking}/update', [AdminDashboardController::class, 'updateBookingStatus'])
             ->name('bookings.update');
     });
+});
+
+Route::prefix('cashir')->name('cashir.')->middleware(['auth', 'cashier'])->group(function () {
+    Route::get('/', fn () => redirect()->route('cashir.dashboard'))->name('home');
+    Route::get('/dashboard', [CashierPanelController::class, 'index'])->name('dashboard');
+    Route::post('/pos', [CashierPanelController::class, 'storePointOfSale'])
+        ->name('pos.store');
+    Route::post('/bookings/{booking}/process', [CashierPanelController::class, 'updateBooking'])
+        ->name('bookings.process');
+    Route::post('/queues/{serviceQueue}/status', [CashierPanelController::class, 'updateQueueStatus'])
+        ->name('queues.status');
+    Route::get('/bookings/{booking}/receipt', [CashierPanelController::class, 'receipt'])
+        ->name('bookings.receipt');
 });

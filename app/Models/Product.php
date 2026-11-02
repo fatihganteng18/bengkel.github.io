@@ -6,10 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    public const LOW_STOCK_THRESHOLD = 10;
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'sku',
+        'category',
+        'price',
+        'sale_price',
+        'stock',
+        'sold_count',
+        'description',
+        'image',
+        'gallery_images',
+        'sni_number',
+    ];
+
     protected function casts(): array
     {
         return [
             'gallery_images' => 'array',
+            'sold_count' => 'integer',
         ];
     }
 
@@ -18,6 +36,17 @@ class Product extends Model
         return $this->has_discount
             ? (float) $this->sale_price
             : (float) $this->price;
+    }
+
+    public function getCategoryLabelAttribute(): string
+    {
+        return match ($this->category) {
+            'tire' => 'Ban Motor',
+            'oil' => 'Oli Motor',
+            'sparepart' => 'Sparepart',
+            'service' => 'Servis',
+            default => 'Lainnya',
+        };
     }
 
     public function getHasDiscountAttribute(): bool
@@ -39,5 +68,15 @@ class Product extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function bookingItems()
+    {
+        return $this->hasMany(BookingItem::class);
+    }
+
+    public function getIsLowStockAttribute(): bool
+    {
+        return $this->stock > 0 && $this->stock <= self::LOW_STOCK_THRESHOLD;
     }
 }

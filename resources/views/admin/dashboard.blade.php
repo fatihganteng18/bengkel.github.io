@@ -24,6 +24,10 @@
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 3v3m8-3v3M4 9h16M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"/><path stroke-linecap="round" d="m9 14 2 2 4-4"/></svg>
                     Kelola booking
                 </a>
+                <a href="{{ route('queues.display') }}" target="_blank" rel="noopener" class="flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-white/[0.06] hover:text-white">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16M4 12h16M4 19h16"/><circle cx="7" cy="5" r="1"/><circle cx="7" cy="12" r="1"/><circle cx="7" cy="19" r="1"/></svg>
+                    Monitor antrean
+                </a>
                 <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-white/[0.06] hover:text-white">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 4l9 6.5v9a.5.5 0 01-.5.5h-17a.5.5 0 01-.5-.5v-9z"/><path stroke-linecap="round" d="M9 20v-6h6v6"/></svg>
                     Lihat toko
@@ -112,7 +116,7 @@
                         <div class="h-64">
                             <canvas
                                 x-ref="bestSellersChart"
-                                data-chart="{{ json_encode(['labels' => $bestSellers->pluck('name')->values(), 'values' => $bestSellers->pluck('bookings_count')->values()], JSON_HEX_APOS | JSON_HEX_QUOT) }}"
+                                data-chart="{{ json_encode(['labels' => $bestSellers->pluck('name')->values(), 'values' => $bestSellers->pluck('analytics_count')->values()], JSON_HEX_APOS | JSON_HEX_QUOT) }}"
                                 aria-label="Grafik lima produk dengan jumlah penjualan terkonfirmasi tertinggi"
                                 role="img"></canvas>
                         </div>
@@ -120,7 +124,7 @@
                             @forelse ($bestSellers as $product)
                                 <div class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
                                     <div class="min-w-0"><p class="truncate text-sm font-bold text-slate-800">{{ $product->name }}</p><p class="mt-1 text-[10px] capitalize text-slate-500">{{ $product->category }}</p></div>
-                                    <span class="shrink-0 rounded-full bg-cyan-50 px-3 py-1 text-xs font-black text-cyan-900">{{ number_format($product->bookings_count) }} booking</span>
+                                    <span class="shrink-0 rounded-full bg-cyan-50 px-3 py-1 text-xs font-black text-cyan-900">{{ number_format($product->analytics_count) }} {{ $product->sold_count > 0 ? 'terjual' : 'booking' }}</span>
                                 </div>
                             @empty
                                 <p class="py-3 text-xs text-slate-500">Belum ada transaksi produk yang lunas atau booking servis yang selesai.</p>

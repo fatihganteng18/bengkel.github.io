@@ -333,7 +333,125 @@ html.dark .locale-option-active {
 }
 
 .catalog-section {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.035));
+    background: #f8fafc;
+}
+
+.brand-carousel-track {
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+
+.brand-carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.brand-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    background: #fff;
+    color: #475569;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+    transform: translateY(-50%);
+    transition: color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.brand-carousel-arrow:hover {
+    border-color: #93c5fd;
+    color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.16);
+}
+
+.brand-tile-active {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.14);
+}
+
+.brand-tile-active span {
+    transform: scale(1.04);
+}
+
+.brand-carousel-arrow svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.catalog-filter-accordion summary {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    color: #1e293b;
+    font-size: 0.75rem;
+    font-weight: 750;
+    list-style: none;
+}
+
+.catalog-filter-accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.catalog-filter-accordion summary::after {
+    content: "⌄";
+    color: #64748b;
+    font-size: 0.9rem;
+    transition: transform 160ms ease;
+}
+
+.catalog-filter-accordion[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.catalog-range {
+    pointer-events: none;
+    appearance: none;
+    height: 1.25rem;
+    background: transparent;
+}
+
+.catalog-range-top {
+    z-index: 2;
+}
+
+.catalog-range::-webkit-slider-runnable-track {
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: #bfdbfe;
+}
+
+.catalog-range::-moz-range-track {
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: #bfdbfe;
+}
+
+.catalog-range::-webkit-slider-thumb {
+    pointer-events: all;
+    appearance: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-top: -0.325rem;
+    border: 2px solid #2563eb;
+    border-radius: 9999px;
+    background: #fff;
+    cursor: grab;
+}
+
+.catalog-range::-moz-range-thumb {
+    pointer-events: all;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid #2563eb;
+    border-radius: 9999px;
+    background: #fff;
+    cursor: grab;
 }
 
 .filter-chip {
@@ -742,6 +860,122 @@ html.theme-light .product-visual {
 
 html.theme-light .product-card .border-white\/\[0\.08\] {
     border-color: rgba(15, 23, 42, 0.1);
+}
+
+html.dark #katalog.catalog-section {
+    border-color: #1e293b;
+    background: linear-gradient(180deg, #0b1220, #111827);
+}
+
+html.dark #katalog .brand-tile,
+html.dark #katalog .catalog-search,
+html.dark #katalog .catalog-filter-panel,
+html.dark #katalog .catalog-product-card {
+    border-color: #334155;
+    background-color: #111827;
+    color: #e2e8f0;
+}
+
+html.dark #katalog .brand-tile {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+html.dark #katalog .brand-tile-active {
+    border-color: #60a5fa;
+    background: #172554;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+html.dark #katalog .catalog-search input,
+html.dark #katalog .catalog-price-input input,
+html.dark #katalog select {
+    color: #e2e8f0;
+}
+
+html.dark #katalog select,
+html.dark #katalog .catalog-price-input {
+    border-color: #475569;
+    background-color: #0b1220;
+}
+
+html.dark #katalog .catalog-product-card > .relative {
+    background-color: #0f172a;
+}
+
+html.dark #katalog .text-slate-900,
+html.dark #katalog .text-slate-800,
+html.dark #katalog .catalog-filter-accordion summary {
+    color: #f1f5f9;
+}
+
+html.dark #katalog .text-slate-700,
+html.dark #katalog .text-slate-600 {
+    color: #cbd5e1;
+}
+
+html.dark #katalog .text-slate-500,
+html.dark #katalog .text-slate-400,
+html.dark #katalog .placeholder\:text-slate-400::placeholder {
+    color: #94a3b8;
+}
+
+html.dark #katalog .catalog-product-card .border-blue-700 {
+    border-color: #60a5fa;
+    color: #93c5fd;
+}
+
+html.dark #katalog .border-slate-100,
+html.dark #katalog .border-slate-200 {
+    border-color: #334155;
+}
+
+html.dark #katalog .brand-tile .text-blue-900 {
+    color: #93c5fd;
+}
+
+html.dark #katalog .brand-tile .text-blue-700,
+html.dark #katalog .brand-tile .text-indigo-700 {
+    color: #a5b4fc;
+}
+
+html.dark #katalog .brand-tile .text-orange-600 {
+    color: #fdba74;
+}
+
+html.dark #katalog .brand-tile .text-emerald-700 {
+    color: #6ee7b7;
+}
+
+html.dark #katalog .brand-tile .text-rose-600,
+html.dark #katalog .brand-tile .text-red-600,
+html.dark #katalog .brand-tile .text-red-700 {
+    color: #fda4af;
+}
+
+html.dark #katalog .brand-tile .text-yellow-600 {
+    color: #fde047;
+}
+
+html.dark #katalog .brand-carousel-arrow {
+    border-color: #334155;
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+html.dark #katalog .catalog-range::-webkit-slider-runnable-track,
+html.dark #katalog .catalog-range::-moz-range-track {
+    background: #334155;
+}
+
+html.dark #katalog .catalog-range::-webkit-slider-thumb,
+html.dark #katalog .catalog-range::-moz-range-thumb {
+    border-color: #60a5fa;
+    background: #0f172a;
+}
+
+html.dark #katalog .catalog-filter-panel > div,
+html.dark #katalog .catalog-filter-accordion {
+    border-color: #334155;
 }
 
 html.theme-light .store-card {

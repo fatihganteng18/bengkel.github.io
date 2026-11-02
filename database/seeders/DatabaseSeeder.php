@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Motorcycle;
-use App\Models\Product;
 use App\Models\Store;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +11,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(AdminUserSeeder::class);
+        $this->call(CashierUserSeeder::class);
 
         foreach ([
             ['brand' => 'Honda', 'model_name' => 'Vario 160', 'front_tire_size' => '100/80-14', 'rear_tire_size' => '120/70-14'],
@@ -25,13 +25,7 @@ class DatabaseSeeder extends Seeder
             $motorcycle->forceFill($motorcycleData)->save();
         }
 
-        foreach ([
-            ['name' => 'Planetoil Matic 10W-30', 'slug' => 'planetoil-10w-30', 'category' => 'oil', 'price' => 55000, 'stock' => 50, 'description' => 'Oli mesin matic.', 'image' => ''],
-            ['name' => 'Ban Corsa Platinum R26', 'slug' => 'corsa-r26', 'category' => 'tire', 'price' => 285000, 'stock' => 25, 'description' => 'Ban tubeless belakang.', 'image' => ''],
-        ] as $productData) {
-            $product = Product::query()->firstOrNew(['slug' => $productData['slug']]);
-            $product->forceFill($productData)->save();
-        }
+        $this->call(ProductSeeder::class);
 
         foreach ([
             ['name' => 'Planet Ban Ahmad Yani', 'address' => 'Jl. Ahmad Yani No. 124', 'city' => 'Surabaya', 'phone' => '0812345678', 'latitude' => -7.28, 'longitude' => 112.74],

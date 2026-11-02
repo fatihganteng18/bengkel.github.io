@@ -16,8 +16,10 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin(Request $request): View
     {
+        $this->rememberIntendedUrl($request);
+
         return view('auth.login');
     }
 
@@ -37,9 +39,15 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return $request->user()->role === 'admin'
-            ? redirect()->route('admin.dashboard')
-            : redirect()->route('home');
+        if ($request->user()->role === User::ROLE_ADMIN) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($request->user()->role === User::ROLE_CASHIER) {
+            return redirect()->route('cashir.dashboard');
+        }
+
+        return redirect()->intended(route('home'));
     }
 
     public function showAdminLogin(): View|RedirectResponse
@@ -78,8 +86,10 @@ class AuthController extends Controller
         return redirect()->route('admin.dashboard');
     }
 
-    public function showRegister(): View
+    public function showRegister(Request $request): View
     {
+        $this->rememberIntendedUrl($request);
+
         return view('auth.register');
     }
 
@@ -96,7 +106,11 @@ class AuthController extends Controller
                 'string',
                 'email',
                 'max:255',
-                Rule::notIn(['admin@gmail.com', Str::lower((string) config('planetban.admin.email'))]),
+                Rule::notIn([
+                    'admin@gmail.com',
+                    'adillahalfaris@gmail.com',
+                    Str::lower((string) config('planetban.admin.email')),
+                ]),
                 'unique:users,email',
             ],
             'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+() -]{8,20}$/', 'unique:users,phone'],
@@ -113,7 +127,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('home')
+        return redirect()->intended(route('home'))
             ->with('success', 'Akun berhasil dibuat. Selamat datang di Planet Ban!');
     }
 
@@ -123,7 +137,11 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $bookings = Booking::with(['store', 'product'])
+        if (Auth::user()->role === User::ROLE_CASHIER) {
+            return redirect()->route('cashir.dashboard');
+        }
+
+        $bookings = Booking::with(['store', 'product', 'serviceQueue'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
@@ -196,5 +214,19 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login')->with('status', __($status));
+    }
+
+    private function rememberIntendedUrl(Request $request): void
+    {
+        $intended = $request->query('intended');
+
+        if (! is_string($intended)
+            || ! preg_match('#^/(?!/)[^\\\\]*$#D', $intended)
+            || parse_url($intended, PHP_URL_HOST) !== null
+            || parse_url($intended, PHP_URL_SCHEME) !== null) {
+            return;
+        }
+
+        $request->session()->put('url.intended', url($intended));
     }
 }

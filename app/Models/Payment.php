@@ -36,6 +36,16 @@ class Payment extends Model
         };
     }
 
+    public function getUsesDemoQrAttribute(): bool
+    {
+        return in_array($this->method, [
+            'outlet_qris',
+            'ewallet_gopay',
+            'ewallet_ovo',
+            'ewallet_dana',
+        ], true);
+    }
+
     public function booking()
     {
         return $this->belongsTo(Booking::class);

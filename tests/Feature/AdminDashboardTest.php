@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\User;
 use Database\Seeders\AdminUserSeeder;
+use Database\Seeders\CashierUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -54,9 +55,12 @@ class AdminDashboardTest extends TestCase
 
     public function test_the_admin_seeder_creates_the_fixed_admin_account_and_login_redirects_to_dashboard(): void
     {
-        config(['planetban.admin.password' => 'Adillah354']);
+        config([
+            'planetban.admin.email' => 'admin@gmail.com',
+            'planetban.admin.password' => 'Adillah354',
+        ]);
         $this->seed(AdminUserSeeder::class);
-        $admin = User::query()->where('email', 'adillahalfaris@gmail.com')->firstOrFail();
+        $admin = User::query()->where('email', 'admin@gmail.com')->firstOrFail();
 
         $this->assertSame('admin', $admin->role);
         $this->assertTrue(Hash::check('Adillah354', $admin->password));
@@ -66,22 +70,51 @@ class AdminDashboardTest extends TestCase
             ->assertSee('Masuk ke Dashboard Admin');
 
         $this->post(route('admin.login.submit'), [
-            'email' => 'adillahalfaris@gmail.com',
+            'email' => 'admin@gmail.com',
             'password' => 'Adillah354',
         ])->assertRedirect(route('admin.dashboard'));
     }
 
+    public function test_cashier_seeder_creates_a_cashier_role_account(): void
+    {
+        config(['planetban.cashier.password' => 'kasir123']);
+        $this->seed(CashierUserSeeder::class);
+        $cashier = User::query()->where('email', 'kasir@planetban.com')->firstOrFail();
+
+        $this->assertSame('cashier', $cashier->role);
+        $this->assertTrue(Hash::check('kasir123', $cashier->password));
+    }
+
     public function test_database_seeder_is_safe_to_run_more_than_once(): void
     {
-        config(['planetban.admin.password' => 'Adillah354']);
+        config([
+            'planetban.admin.email' => 'admin@gmail.com',
+            'planetban.admin.password' => 'Adillah354',
+        ]);
+        config(['planetban.cashier.password' => 'kasir123']);
 
         $this->seed();
         $this->seed();
 
-        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseCount('users', 2);
         $this->assertDatabaseCount('motorcycles', 3);
-        $this->assertDatabaseCount('products', 2);
+        $this->assertDatabaseCount('products', 8);
         $this->assertDatabaseCount('stores', 1);
+    }
+
+    public function test_product_seeder_updates_existing_products_without_duplicating_them(): void
+    {
+        $this->seed(\Database\Seeders\ProductSeeder::class);
+        $this->seed(\Database\Seeders\ProductSeeder::class);
+
+        $this->assertDatabaseCount('products', 8);
+        $this->assertDatabaseHas('products', [
+            'slug' => 'corsa-elite-90-90-14',
+            'sku' => 'BAN-COR-909014',
+            'price' => 215000,
+            'stock' => 30,
+            'sold_count' => 28,
+        ]);
     }
 
     public function test_the_admin_login_rejects_customer_accounts(): void

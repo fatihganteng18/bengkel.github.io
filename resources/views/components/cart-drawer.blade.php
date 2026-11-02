@@ -64,9 +64,6 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" @click="bookCartItem(item.id)" class="mt-4 w-full rounded-xl border border-yellow-300/20 bg-yellow-300/10 px-4 py-2.5 text-sm font-extrabold text-yellow-200 transition hover:border-yellow-300/40 hover:bg-yellow-300/15 active:scale-[.98]">
-                        <span x-text="locale === 'en' ? 'Book this product' : 'Pilih untuk booking'"></span>
-                    </button>
                 </article>
             </template>
         </div>
@@ -76,7 +73,10 @@
                 <span class="font-semibold text-slate-500 dark:text-slate-400" x-text="locale === 'en' ? 'Subtotal' : 'Subtotal'"></span>
                 <span class="text-lg font-black text-slate-900 dark:text-white"><span x-text="locale === 'en' ? 'IDR' : 'Rp'"></span> <span x-text="formatCurrency(cartTotal)"></span></span>
             </div>
-            <p class="mt-2 text-xs leading-relaxed text-slate-500" x-text="locale === 'en' ? 'Select a product to add it to the booking form. Each booking includes one product.' : 'Pilih produk untuk memasukkannya ke form booking. Setiap booking mencatat satu produk.'"></p>
+            <p class="mt-2 text-xs leading-relaxed text-slate-500" x-text="locale === 'en' ? 'All products and quantities will be included in one booking.' : 'Semua produk dan jumlahnya akan dimasukkan ke satu booking.'"></p>
+            <button type="button" @click="checkoutAll()" class="mt-4 w-full rounded-xl bg-yellow-300 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-yellow-200 active:scale-[.98]">
+                <span x-text="locale === 'en' ? 'Proceed to Booking / Checkout All' : 'Lanjut Booking / Checkout Semua'"></span>
+            </button>
         </div>
     </aside>
 </div>

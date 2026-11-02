@@ -90,12 +90,61 @@ class AccountAuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_guest_booking_is_redirected_to_sign_in_without_creating_a_booking(): void
+    {
+        $this->post(route('booking.store'), [])
+            ->assertRedirect(route('login'))
+            ->assertSessionHas('url.intended', url('/'));
+
+        $this->assertDatabaseCount('bookings', 0);
+        $this->assertDatabaseCount('payments', 0);
+    }
+
+    public function test_login_and_registration_return_to_a_safe_intended_storefront_url(): void
+    {
+        $user = User::factory()->create(['password' => 'planetban123']);
+
+        $this->get(route('login', ['intended' => '/product/42?from=cart#katalog']))
+            ->assertOk();
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'planetban123',
+        ])->assertRedirect(url('/product/42?from=cart#katalog'));
+
+        auth()->logout();
+        $this->get(route('register', ['intended' => '/product/43#katalog']))
+            ->assertOk();
+        $this->post(route('register.store'), [
+            'name' => 'Ayu Pratama',
+            'email' => 'ayu-redirect@example.com',
+            'phone' => '08123456789',
+            'password' => 'planetban123',
+            'password_confirmation' => 'planetban123',
+        ])->assertRedirect(url('/product/43#katalog'));
+    }
+
+    public function test_login_ignores_external_intended_redirects(): void
+    {
+        $user = User::factory()->create(['password' => 'planetban123']);
+
+        $this->get(route('login', ['intended' => 'https://example.com']))
+            ->assertOk();
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'planetban123',
+        ])->assertRedirect(route('home'));
+    }
+
     public function test_signed_in_customer_sees_account_menu_and_guest_sees_sign_in_link(): void
     {
         $this->get(route('home'))
             ->assertOk()
             ->assertSee(route('login'), false)
-            ->assertSee('Masuk');
+            ->assertSee(route('register'), false)
+            ->assertSee('Masuk')
+            ->assertSee('Daftar')
+            ->assertSee('Silakan masuk terlebih dahulu untuk melanjutkan pemesanan.')
+            ->assertSee('data-authenticated="false"', false);
 
         $user = User::factory()->create([
             'name' => 'Ayu Rider',
@@ -110,7 +159,8 @@ class AccountAuthenticationTest extends TestCase
             ->assertSee(route('account.dashboard'), false)
             ->assertSee(route('logout'), false)
             ->assertSee('Akun saya')
-            ->assertSee('Keluar');
+            ->assertSee('Keluar')
+            ->assertSee('data-authenticated="true"', false);
     }
 
     public function test_the_customer_dashboard_only_shows_the_signed_in_users_bookings(): void

@@ -9,7 +9,7 @@
 
 ## Planet Ban
 
-A Laravel storefront for motorcycle products and service bookings, with an Alpine.js customer experience and a role-protected admin workspace.
+A Laravel storefront for motorcycle products and service bookings, with an Alpine.js customer experience, role-protected admin and cashier workspaces, and a live service queue.
 
 ### Features
 
@@ -18,21 +18,27 @@ A Laravel storefront for motorcycle products and service bookings, with an Alpin
 - Persistent light/dark theme and Indonesian/English interface preferences.
 - Separate customer and administrator sign-in routes.
 - Admin booking management and Chart.js sales, best-seller, and inventory dashboards.
+- Cashier panel for payment confirmation, category-aware service queues, and printable booking receipts.
+- Cashier point of sale for in-store product sales, live totals, stock validation, payment recording, and receipts.
+- Public live queue display at `/antrean`.
 
 ### Local setup
 
 1. Install PHP and Node dependencies, copy `.env.example` to `.env`, and generate an application key.
-2. Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the local `.env` file. The default admin email is `adillahalfaris@gmail.com`; set the requested password there rather than committing credentials to the repository.
-3. Run `php artisan migrate --seed` to create the schema and bootstrap the administrator.
+2. Set `ADMIN_PASSWORD` and `CASHIER_PASSWORD` in the local `.env` file. The account emails are `admin@gmail.com` and `kasir@planetban.com`; never commit account passwords to the repository.
+3. Run `php artisan migrate --seed` to create the schema, bootstrap the admin and cashier accounts, and load sample catalog products.
 4. Run `npm install` and `npm run build`, then start the app with `php artisan serve`.
 
-The admin seeder refuses to run without an email and password. On production, configure a unique strong password through the deployment environment, set `APP_DEBUG=false`, and use HTTPS.
+The admin and cashier seeders refuse to run without their passwords. Configure the requested local credentials in `.env`; use unique strong passwords on production, set `APP_DEBUG=false`, and use HTTPS.
+
+To load or refresh only the sample products after migrating, run `php artisan db:seed --class=ProductSeeder`.
 
 ### Sign-in and access
 
 - Customer sign-in: `/login`
 - Administrator sign-in: `/admin/login`
 - Admin workspace: `/admin/dashboard` (requires an authenticated account with the `admin` role)
+- Cashier workspace: `/cashir/dashboard` (requires an authenticated account with the `cashier` role)
 
 Public registration always creates a `user` account and rejects the configured administrator email.
 

@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    public const TYPE_SERVICE = 'service';
+
+    public const TYPE_COUNTER_SALE = 'counter_sale';
+
     use HasFactory;
 
     protected $fillable = [
@@ -15,6 +19,7 @@ class Booking extends Model
         'user_id',
         'store_id',
         'product_id',
+        'booking_type',
         'booking_date',
         'booking_time',
         'status',
@@ -38,5 +43,15 @@ class Booking extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(BookingItem::class);
+    }
+
+    public function serviceQueue()
+    {
+        return $this->hasOne(ServiceQueue::class);
     }
 }

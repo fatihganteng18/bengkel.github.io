@@ -10,6 +10,10 @@
 <body
     class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased"
     x-data="planetBanApp"
+    data-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
+    data-login-url="{{ route('login') }}"
+    data-register-url="{{ route('register') }}"
+    x-init="@if($errors->any()) bookingModalOpen = true; bookingItems = @js($bookingItems); selectedStoreId = @js((string) old('store_id', '')) @endif"
     x-effect="document.body.classList.toggle('overflow-hidden', cartDrawerOpen || bookingModalOpen)"
     @keydown.escape.window="closeOverlays()"
 >
@@ -20,7 +24,7 @@
         </div>
     @endif
 
-    <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
+    <header class="relative z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
         <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2" aria-label="Planet Ban, beranda">
                 <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-950 text-lg font-black italic text-yellow-300 shadow-sm">P</span>
@@ -124,7 +128,7 @@
             <div class="product-detail-panel rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7 lg:p-8">
                 <div class="mb-4 flex flex-wrap items-center gap-2">
                     <span class="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.14em] text-blue-900">{{ $product->category === 'tire' ? 'PRESA · BAN MOTOR' : strtoupper($product->category) }}</span>
-                    @if($product->stock > 0 && $product->stock <= 5)
+                    @if($product->is_low_stock)
                         <span class="rounded-full bg-amber-50 px-3 py-1.5 text-[10px] font-extrabold text-amber-800">Stok terbatas</span>
                     @endif
                 </div>
@@ -135,7 +139,7 @@
                     <span class="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
                     <span>{{ number_format($soldCount) }} terjual</span>
                     <span class="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
-                    <span>SKU: <strong class="font-bold text-slate-700">PB-{{ str_pad((string) $product->id, 5, '0', STR_PAD_LEFT) }}</strong></span>
+                    <span>SKU: <strong class="font-bold text-slate-700">{{ $product->sku ?? 'PB-' . str_pad((string) $product->id, 5, '0', STR_PAD_LEFT) }}</strong></span>
                 </div>
 
                 <div class="my-6 border-t border-slate-100"></div>
@@ -164,7 +168,10 @@
                 <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button
                         type="button"
-                        @click="openBookingModal('{{ $product->id }}')"
+                        @click="openBookingModalForProduct($el)"
+                        data-product-id="{{ $product->id }}"
+                        data-product-name="{{ $product->name }}"
+                        data-product-price="{{ $product->effective_price }}"
                         class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-blue-950 px-4 py-3 text-sm font-extrabold text-blue-950 transition hover:bg-blue-50 active:scale-[.97]"
                     >
                         Beli Langsung
@@ -284,6 +291,7 @@
     </main>
 
     <x-cart-drawer />
+    <x-auth-required-modal />
 
     <div x-cloak x-show="bookingModalOpen" x-transition.opacity @click.self="closeOverlays()" class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" style="display: none;">
         <section
@@ -305,20 +313,29 @@
 
             <form action="{{ route('booking.store') }}" method="POST" @submit.prevent="submitForm($event)" class="space-y-4">
                 @csrf
-                <input type="hidden" name="product_id" :value="selectedProductId || '{{ $product->id }}'">
                 <div class="grid gap-4 sm:grid-cols-2">
                     <label class="block text-xs font-bold text-slate-700">Nama lengkap<input type="text" name="customer_name" value="{{ old('customer_name', Auth::user()?->name) }}" required maxlength="255" placeholder="Nama Anda" class="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10"></label>
                     <label class="block text-xs font-bold text-slate-700">No. WhatsApp / HP<input type="tel" name="customer_phone" value="{{ old('customer_phone', Auth::user()?->phone) }}" required maxlength="20" placeholder="081234567890" class="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10"></label>
                 </div>
                 <label class="block text-xs font-bold text-slate-700">Pilih outlet cabang
-                    <select name="store_id" required class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10">
+                    <select name="store_id" x-model="selectedStoreId" required class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10">
                         <option value="">Pilih lokasi outlet</option>
                         @foreach($stores as $store)
                             <option value="{{ $store->id }}">{{ $store->name }} ({{ $store->city }})</option>
                         @endforeach
                     </select>
                 </label>
-                <div class="rounded-xl bg-blue-50 px-4 py-3 text-xs text-blue-950"><span class="font-bold">Produk:</span> {{ $product->name }} · Rp {{ number_format($product->effective_price, 0, ',', '.') }}</div>
+                <fieldset class="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <legend class="px-1 text-xs font-bold uppercase text-slate-700">Ringkasan produk</legend>
+                    <template x-for="(item, index) in bookingItems" :key="item.id">
+                        <div class="flex items-start justify-between gap-4 text-sm">
+                            <input type="hidden" :name="`products[${index}][id]`" :value="item.id">
+                            <input type="hidden" :name="`products[${index}][quantity]`" :value="item.quantity">
+                            <span class="min-w-0 text-slate-700"><span x-text="item.name"></span><span class="ml-1 text-slate-500">× <span x-text="item.quantity"></span></span></span>
+                            <span class="shrink-0 font-bold text-slate-900">Rp <span x-text="formatCurrency(item.price * item.quantity)"></span></span>
+                        </div>
+                    </template>
+                </fieldset>
                 <div class="grid grid-cols-2 gap-3">
                     <label class="block text-xs font-bold text-slate-700">Tanggal kunjungan<input type="date" name="booking_date" required min="{{ date('Y-m-d') }}" value="{{ old('booking_date') }}" class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-900/10"></label>
                     <label class="block text-xs font-bold text-slate-700">Jam kunjungan

@@ -47,6 +47,46 @@ Alpine.data('productGallery', (images = []) => {
     };
 });
 
+Alpine.data('cashierPos', (products = []) => ({
+    products,
+    items: [{ id: '', quantity: 1 }],
+
+    addItem() {
+        this.items.push({ id: '', quantity: 1 });
+    },
+
+    removeItem(index) {
+        if (this.items.length > 1) {
+            this.items.splice(index, 1);
+        } else {
+            this.items[0] = { id: '', quantity: 1 };
+        }
+    },
+
+    availableProducts(index) {
+        const selectedIds = this.items
+            .filter((_, itemIndex) => itemIndex !== index)
+            .map((item) => String(item.id));
+
+        return this.products.filter((product) => !selectedIds.includes(String(product.id)));
+    },
+
+    productFor(id) {
+        return this.products.find((product) => String(product.id) === String(id));
+    },
+
+    get total() {
+        return this.items.reduce((sum, item) => {
+            const product = this.productFor(item.id);
+            return sum + (product ? Number(product.price) * Number(item.quantity || 0) : 0);
+        }, 0);
+    },
+
+    formatCurrency(amount) {
+        return new Intl.NumberFormat('id-ID').format(amount);
+    },
+}));
+
 Alpine.data('adminDashboard', () => ({
     charts: [],
 
@@ -295,14 +335,34 @@ Alpine.data('planetBanApp', () => ({
     notificationTimer: null,
     selectedCategory: 'all',
     searchProduct: '',
+    categoryDetail: '',
+    selectedMotorcycle: '',
+    minimumPrice: 0,
+    maximumPrice: 643000,
+    catalogPriceCeiling: 643000,
+    catalogSort: 'relevance',
+    selectedBrand: '',
+    selectedTireSize: '',
+    selectedPosition: '',
+    selectedMaterial: '',
+    selectedDiameter: '',
+    selectedTireType: '',
+    priceFilterOpen: true,
     searchStore: '',
-    selectedProductId: '',
+    bookingItems: [],
     selectedStoreId: '',
     isLoading: false,
+    isAuthenticated: false,
+    guestAuthPromptOpen: false,
+    guestLoginUrl: '',
+    guestRegisterUrl: '',
     cart: [],
     cartError: '',
 
     init() {
+        this.isAuthenticated = document.body.dataset.authenticated === 'true';
+        this.cartDrawerOpen = this.isAuthenticated && window.location.hash === '#cart';
+
         try {
             const savedLocale = localStorage.getItem('planet-ban-locale');
             const savedTheme = localStorage.getItem('planet-ban-theme');
@@ -377,6 +437,7 @@ Alpine.data('planetBanApp', () => ({
             accountMenu: 'Menu akun',
             myAccount: 'Akun saya',
             adminDashboard: 'Dashboard admin',
+            cashierDashboard: 'Panel kasir',
             logout: 'Keluar',
             cart: 'Keranjang',
             openNavigation: 'Buka navigasi',
@@ -484,6 +545,7 @@ Alpine.data('planetBanApp', () => ({
             accountMenu: 'Account menu',
             myAccount: 'My account',
             adminDashboard: 'Admin dashboard',
+            cashierDashboard: 'Cashier panel',
             logout: 'Sign out',
             cart: 'Cart',
             openNavigation: 'Open navigation',
@@ -646,16 +708,198 @@ Alpine.data('planetBanApp', () => ({
         return this.cart.reduce((total, item) => total + item.price * item.quantity, 0);
     },
 
-    openBookingModal(productId = '', storeId = '') {
-        this.selectedProductId = productId === null ? '' : String(productId);
+    get visibleCatalogCount() {
+        const products = this.$refs.catalogProducts?.querySelectorAll('[data-catalog-product]');
+
+        return products
+            ? [...products].filter((product) => this.matchesCatalogProduct(product.dataset)).length
+            : 0;
+    },
+
+    matchesCatalogProduct(product) {
+        const price = Number(product.price);
+        const search = this.searchProduct.trim().toLocaleLowerCase('id-ID');
+
+        if (this.selectedCategory !== 'all' && product.category !== this.selectedCategory) {
+            return false;
+        }
+
+        if (this.categoryDetail && product.tireGroup !== this.categoryDetail) {
+            return false;
+        }
+
+        if (search && !product.searchText.includes(search)) {
+            return false;
+        }
+
+        if (!Number.isFinite(price) || price < this.minimumPrice || price > this.maximumPrice) {
+            return false;
+        }
+
+        if (this.selectedBrand && !product.searchText.includes(this.selectedBrand)) {
+            return false;
+        }
+
+        if (this.selectedTireSize && product.size !== this.selectedTireSize) {
+            return false;
+        }
+
+        if (this.selectedPosition && product.position !== this.selectedPosition) {
+            return false;
+        }
+
+        if (this.selectedMaterial && product.material !== this.selectedMaterial) {
+            return false;
+        }
+
+        if (this.selectedDiameter && product.diameter !== this.selectedDiameter) {
+            return false;
+        }
+
+        if (this.selectedTireType && product.type !== this.selectedTireType) {
+            return false;
+        }
+
+        if (this.selectedMotorcycle) {
+            const option = this.$refs.motorcycleFilter?.selectedOptions[0];
+            const compatibleSizes = [option?.dataset.front, option?.dataset.rear]
+                .filter(Boolean)
+                .map((size) => size.toLocaleLowerCase('id-ID').replace(/[^a-z0-9]/g, ''));
+            const productSize = product.size.replace(/[^a-z0-9]/g, '');
+
+            if (product.category !== 'tire' || !compatibleSizes.includes(productSize)) {
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    formatRupiah(amount) {
+        return `Rp ${new Intl.NumberFormat('id-ID').format(Number(amount) || 0)}`;
+    },
+
+    filterCatalogByBrand(brand) {
+        this.selectedBrand = this.selectedBrand === brand ? '' : brand;
+        this.selectedCategory = 'all';
+        this.categoryDetail = '';
+
+        if (this.selectedBrand) {
+            this.selectedMotorcycle = '';
+            this.selectedTireSize = '';
+            this.selectedPosition = '';
+            this.selectedMaterial = '';
+            this.selectedDiameter = '';
+            this.selectedTireType = '';
+        }
+    },
+
+    sortCatalogProducts() {
+        const container = this.$refs.catalogProducts;
+
+        if (!container) {
+            return;
+        }
+
+        const products = [...container.querySelectorAll('[data-catalog-product]')];
+        const sorters = {
+            'price-asc': (a, b) => Number(a.dataset.price) - Number(b.dataset.price),
+            'price-desc': (a, b) => Number(b.dataset.price) - Number(a.dataset.price),
+            name: (a, b) => a.dataset.name.localeCompare(b.dataset.name, 'id'),
+            relevance: (a, b) => Number(a.dataset.order) - Number(b.dataset.order),
+        };
+        const sorter = sorters[this.catalogSort];
+
+        if (!sorter) {
+            console.error('Urutan katalog tidak didukung.', this.catalogSort);
+            return;
+        }
+
+        products.sort(sorter).forEach((product) => container.append(product));
+    },
+
+    applyCatalogFilters() {
+        this.$refs.catalogProducts?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+
+    resetCatalogFilters() {
+        this.selectedCategory = 'all';
+        this.categoryDetail = '';
+        this.searchProduct = '';
+        this.selectedMotorcycle = '';
+        this.minimumPrice = 0;
+        this.maximumPrice = this.catalogPriceCeiling;
+        this.selectedBrand = '';
+        this.selectedTireSize = '';
+        this.selectedPosition = '';
+        this.selectedMaterial = '';
+        this.selectedDiameter = '';
+        this.selectedTireType = '';
+        this.catalogSort = 'relevance';
+        this.sortCatalogProducts();
+    },
+
+    openBookingModal(storeId = '') {
+        if (!this.requireAuthentication()) {
+            return;
+        }
+
+        this.bookingItems = [];
         this.selectedStoreId = storeId === null ? '' : String(storeId);
         this.bookingModalOpen = true;
         this.mobileMenuOpen = false;
         this.cartDrawerOpen = false;
     },
 
+    openBookingModalForProduct(button) {
+        if (!this.requireAuthentication()) {
+            return;
+        }
+
+        if (!(button instanceof HTMLElement)) {
+            console.error('Tombol booking produk tidak valid.');
+            this.cartError = 'Produk tidak dapat dimasukkan ke booking. Silakan coba lagi.';
+            return;
+        }
+
+        const item = {
+            id: button.dataset.productId,
+            name: button.dataset.productName,
+            price: Number(button.dataset.productPrice),
+            quantity: 1,
+        };
+
+        if (!item.id || !item.name || !Number.isFinite(item.price)) {
+            console.error('Data produk booking tidak lengkap.', item);
+            this.cartError = 'Produk tidak dapat dimasukkan ke booking. Silakan coba lagi.';
+            return;
+        }
+
+        this.bookingItems = [item];
+        this.selectedStoreId = '';
+        this.bookingModalOpen = true;
+        this.mobileMenuOpen = false;
+        this.cartDrawerOpen = false;
+    },
+
+    checkoutAll() {
+        if (!this.requireAuthentication(true)) {
+            return;
+        }
+
+        if (this.cart.length === 0) {
+            this.cartError = 'Keranjang masih kosong.';
+            return;
+        }
+
+        this.bookingItems = this.cart.map((item) => ({ ...item }));
+        this.bookingModalOpen = true;
+        this.mobileMenuOpen = false;
+        this.cartDrawerOpen = false;
+    },
+
     openBookingModalWithStore(storeId) {
-        this.openBookingModal('', storeId);
+        this.openBookingModal(storeId);
     },
 
     submitForm(event) {
@@ -696,6 +940,10 @@ Alpine.data('planetBanApp', () => ({
     },
 
     addToCartFromButton(button) {
+        if (!this.requireAuthentication()) {
+            return;
+        }
+
         if (!(button instanceof HTMLElement)) {
             console.error('Tombol produk untuk keranjang tidak valid.');
             this.cartError = 'Produk tidak dapat ditambahkan. Silakan coba lagi.';
@@ -741,6 +989,25 @@ Alpine.data('planetBanApp', () => ({
         this.cartDrawerOpen = true;
     },
 
+    requireAuthentication(openCartAfterSignIn = false) {
+        if (this.isAuthenticated) {
+            return true;
+        }
+
+        const intended = `${window.location.pathname}${window.location.search}${openCartAfterSignIn ? '#cart' : window.location.hash}`;
+        const loginUrl = new URL(document.body.dataset.loginUrl, window.location.origin);
+        const registerUrl = new URL(document.body.dataset.registerUrl, window.location.origin);
+        loginUrl.searchParams.set('intended', intended);
+        registerUrl.searchParams.set('intended', intended);
+        this.guestLoginUrl = loginUrl.href;
+        this.guestRegisterUrl = registerUrl.href;
+        this.guestAuthPromptOpen = true;
+        this.cartDrawerOpen = false;
+        this.bookingModalOpen = false;
+
+        return false;
+    },
+
     updateCartQuantity(productId, amount) {
         const cartItem = this.cart.find((item) => String(item.id) === String(productId));
 
@@ -771,10 +1038,6 @@ Alpine.data('planetBanApp', () => ({
     removeFromCart(productId) {
         this.cart = this.cart.filter((item) => String(item.id) !== String(productId));
         this.saveCart();
-    },
-
-    bookCartItem(productId) {
-        this.openBookingModal(productId);
     },
 
     formatCurrency(amount) {

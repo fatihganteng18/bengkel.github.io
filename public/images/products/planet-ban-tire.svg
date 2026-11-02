@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <linearGradient id="tire" x1="61" x2="196" y1="49" y2="205" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34383c"/>
+      <stop offset=".24" stop-color="#080a0c"/>
+      <stop offset=".54" stop-color="#202428"/>
+      <stop offset=".78" stop-color="#050607"/>
+      <stop offset="1" stop-color="#3d4145"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="82" x2="169" y1="72" y2="182" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8fafc"/>
+      <stop offset=".22" stop-color="#7c858e"/>
+      <stop offset=".52" stop-color="#e2e8f0"/>
+      <stop offset=".8" stop-color="#68727c"/>
+      <stop offset="1" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="hub" x1="108" x2="149" y1="106" y2="151" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e2e8f0"/>
+      <stop offset=".5" stop-color="#64707b"/>
+      <stop offset="1" stop-color="#dbe2e8"/>
+    </linearGradient>
+    <pattern id="tread" width="17" height="22" patternTransform="rotate(20)" patternUnits="userSpaceOnUse">
+      <path d="M2-3 9 8 2 19M11-3l7 11-7 11" stroke="#646a70" stroke-opacity=".48" stroke-width="2"/>
+      <path d="M5-3 12 8 5 19" stroke="#050607" stroke-opacity=".75" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" width="1.5" height="1.35" x="-.25" y="-.12">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dy="7"/>
+      <feComponentTransfer>
+        <feFuncA slope=".22" type="linear"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <ellipse cx="130" cy="224" fill="#0f172a" opacity=".12" rx="63" ry="11"/>
+  <g filter="url(#shadow)" transform="rotate(8 128 128)">
+    <ellipse cx="128" cy="126" fill="url(#tire)" rx="62" ry="96"/>
+    <ellipse cx="128" cy="126" fill="url(#tread)" rx="62" ry="96"/>
+    <ellipse cx="128" cy="126" stroke="#555b60" stroke-opacity=".75" stroke-width="2" rx="55" ry="88"/>
+    <ellipse cx="128" cy="126" fill="#101316" stroke="#707981" stroke-width="3" rx="43" ry="76"/>
+    <ellipse cx="128" cy="126" fill="url(#rim)" rx="35" ry="66"/>
+    <ellipse cx="128" cy="126" fill="#303941" rx="27" ry="57"/>
+    <g stroke="#cbd5e1" stroke-linecap="round" stroke-width="4">
+      <path d="M128 72v108M106 78l44 96M91 96l74 60M87 126h82M94 157l68-62M107 174l42-96"/>
+    </g>
+    <ellipse cx="128" cy="126" fill="url(#hub)" stroke="#f1f5f9" stroke-width="2" rx="13" ry="20"/>
+    <ellipse cx="128" cy="126" fill="#252c32" rx="5" ry="9"/>
+    <path d="M78 83c-8 22-8 61 0 84" stroke="#858b91" stroke-linecap="round" stroke-opacity=".6" stroke-width="2"/>
+    <path d="M178 83c8 22 8 61 0 84" stroke="#020304" stroke-linecap="round" stroke-opacity=".8" stroke-width="3"/>
+  </g>
+</svg>
