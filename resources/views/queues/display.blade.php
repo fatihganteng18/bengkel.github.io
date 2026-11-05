@@ -5,19 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="10">
     <meta name="theme-color" content="#020617">
-    <title>Monitor Antrean | Planet Ban</title>
+    <title>Monitor Antrean | Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-950 text-white">
-    <main class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+    @if($adminLayout)
+        <div class="min-h-screen lg:grid lg:grid-cols-[260px_minmax(0,1fr)]">
+            @include('components.admin-sidebar', ['activeMenu' => 'queues'])
+            <div class="min-w-0">
+                <header class="flex items-center justify-between gap-4 border-b border-white/10 bg-slate-900 px-4 py-4 sm:px-7 lg:px-9">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[.2em] text-cyan-300">ARISA KNALPOT · ADMIN</p>
+                        <h1 class="mt-1 text-xl font-black tracking-tight sm:text-2xl">Monitor Antrean</h1>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="rounded-xl border border-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/10">Keluar</button>
+                    </form>
+                </header>
+                <main class="mx-auto max-w-[1600px] px-4 py-6 sm:px-7 lg:px-9">
+    @else
+        <main class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
         <header class="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-                <p class="text-xs font-black uppercase tracking-[.25em] text-cyan-300">Planet Ban · Live queue</p>
+                <p class="text-xs font-black uppercase tracking-[.25em] text-cyan-300">ARISA KNALPOT · LIVE QUEUE</p>
                 <h1 class="mt-2 text-3xl font-black sm:text-5xl">Antrean Servis Hari Ini</h1>
                 <p class="mt-2 text-sm text-slate-400">{{ now()->translatedFormat('l, d F Y') }} · Diperbarui otomatis setiap 10 detik</p>
             </div>
             <a href="{{ route('home') }}" class="rounded-xl border border-white/15 px-4 py-2 text-sm font-bold text-slate-200 hover:bg-white/10">Beranda</a>
         </header>
+    @endif
 
         @forelse ($queues as $storeName => $storeQueues)
             <section class="mb-8 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
@@ -46,6 +63,10 @@
                 <p class="mt-2 text-sm text-slate-400">Nomor antrean akan muncul setelah booking dikonfirmasi oleh petugas.</p>
             </section>
         @endforelse
-    </main>
+        </main>
+    @if($adminLayout)
+        </div>
+        </div>
+    @endif
 </body>
 </html>

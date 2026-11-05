@@ -13,6 +13,7 @@ class Product extends Model
         'slug',
         'sku',
         'category',
+        'sub_category',
         'price',
         'sale_price',
         'stock',
@@ -21,6 +22,10 @@ class Product extends Model
         'image',
         'gallery_images',
         'sni_number',
+        'inlet_size',
+        'sound_type',
+        'material',
+        'engine_cc',
     ];
 
     protected function casts(): array
@@ -41,6 +46,7 @@ class Product extends Model
     public function getCategoryLabelAttribute(): string
     {
         return match ($this->category) {
+            'exhaust' => 'Knalpot Mobil',
             'tire' => 'Ban Motor',
             'oil' => 'Oli Motor',
             'sparepart' => 'Sparepart',

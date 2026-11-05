@@ -98,22 +98,27 @@ class AdminDashboardTest extends TestCase
 
         $this->assertDatabaseCount('users', 2);
         $this->assertDatabaseCount('motorcycles', 3);
-        $this->assertDatabaseCount('products', 8);
+        $this->assertDatabaseCount('products', 500);
         $this->assertDatabaseCount('stores', 1);
     }
 
-    public function test_product_seeder_updates_existing_products_without_duplicating_them(): void
+    public function test_product_seeder_resets_and_rebuilds_the_500_product_catalog(): void
     {
         $this->seed(\Database\Seeders\ProductSeeder::class);
         $this->seed(\Database\Seeders\ProductSeeder::class);
 
-        $this->assertDatabaseCount('products', 8);
+        $this->assertDatabaseCount('products', 500);
+        $this->assertSame(11, DB::table('products')->distinct()->count('sub_category'));
+        $this->assertSame(500, DB::table('products')->distinct()->count('sku'));
+        $this->assertEqualsCanonicalizing(
+            ['1.0cc - 1.6cc', '1.8cc - 2.0cc', '2.5cc - 3.5cc'],
+            DB::table('products')->distinct()->orderBy('engine_cc')->pluck('engine_cc')->all(),
+        );
         $this->assertDatabaseHas('products', [
-            'slug' => 'corsa-elite-90-90-14',
-            'sku' => 'BAN-COR-909014',
-            'price' => 215000,
-            'stock' => 30,
-            'sold_count' => 28,
+            'sku' => 'EXH-01-001',
+            'category' => 'exhaust',
+            'sub_category' => 'Knalpot Standar Depan / Frontpipe',
+            'inlet_size' => '2.0 inch',
         ]);
     }
 

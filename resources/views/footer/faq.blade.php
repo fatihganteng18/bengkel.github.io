@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - Planet Ban</title>
+    <title>FAQ - Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen font-sans">
@@ -11,7 +11,7 @@
     <!-- Header Sederhana -->
     <header class="bg-white shadow-xs border-b border-gray-100 py-4 px-6 md:px-12 flex justify-between items-center">
         <a href="/home" class="bg-blue-900 text-white font-black italic px-3 py-1 rounded-lg text-lg">
-            PLANET <span class="text-yellow-400">BAN</span>
+            Arisa <span class="text-lime-300">Knalpot</span>
         </a>
         <a href="/home" class="text-sm font-bold text-blue-900 hover:underline">&larr; Kembali ke Beranda</a>
     </header>

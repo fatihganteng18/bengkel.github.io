@@ -328,26 +328,11 @@ Alpine.data('planetBanApp', () => ({
     accountDropdown: false,
     cartDrawerOpen: false,
     languageMenuOpen: false,
-    isDark: false,
+    isDark: true,
     locale: 'id',
     liveNotificationIndex: 0,
     liveNotificationVisible: true,
     notificationTimer: null,
-    selectedCategory: 'all',
-    searchProduct: '',
-    categoryDetail: '',
-    selectedMotorcycle: '',
-    minimumPrice: 0,
-    maximumPrice: 643000,
-    catalogPriceCeiling: 643000,
-    catalogSort: 'relevance',
-    selectedBrand: '',
-    selectedTireSize: '',
-    selectedPosition: '',
-    selectedMaterial: '',
-    selectedDiameter: '',
-    selectedTireType: '',
-    priceFilterOpen: true,
     searchStore: '',
     bookingItems: [],
     selectedStoreId: '',
@@ -434,6 +419,7 @@ Alpine.data('planetBanApp', () => ({
             navStores: 'Lokasi outlet',
             navBookingStatus: 'Cek booking',
             login: 'Masuk',
+            register: 'Daftar',
             accountMenu: 'Menu akun',
             myAccount: 'Akun saya',
             adminDashboard: 'Dashboard admin',
@@ -448,33 +434,32 @@ Alpine.data('planetBanApp', () => ({
             bookingService: 'Booking servis',
             openToday: 'BUKA HARI INI',
             serviceAvailable: 'Layanan tersedia',
-            heroEyebrow: 'Your ride, refined.',
-            heroTitle: 'Performa motor,',
-            heroSubtitle: 'tanpa kompromi.',
-            heroDescription: 'Perawatan presisi, produk terjamin, dan mekanik ahli. Semua yang motor Anda butuhkan, dalam satu pit stop.',
-            bookNow: 'Booking servis sekarang',
-            browseProducts: 'Jelajahi produk',
+            heroEyebrow: 'ARISA KNALPOT · BUILT FOR YOUR VIBE',
+            heroTitle: 'Auto ganteng,',
+            heroSubtitle: 'suara punya karakter.',
+            heroDescription: 'Knalpot custom, welding presisi, dan setup suara yang pas. Perform maksimal buat daily drive sampai weekend run.',
+            bookNow: 'Booking workshop',
+            browseProducts: 'Explore katalog',
             happyCustomers: 'Pelanggan puas',
             branches: 'Cabang',
             completedServices: 'Servis selesai',
-            serviceIntro: 'Dibuat untuk perjalanan Anda',
-            serviceHeadline: 'Satu pit stop.',
-            serviceHeadlineMuted: 'Banyak beresnya.',
-            serviceDescription: 'Servis dan kebutuhan motor dengan standar yang konsisten, ditangani oleh teknisi profesional di outlet terdekat.',
-            tires: 'Ban motor',
-            tiresDescription: 'Grip maksimal, siap segala kondisi jalan.',
-            oils: 'Oli & pelumas',
-            oilsDescription: 'Mesin halus, performa tetap optimal.',
-            spareparts: 'Sparepart',
-            sparepartsDescription: 'Komponen pilihan untuk kenyamanan berkendara.',
+            serviceIntro: 'BUILT IN THE WORKSHOP',
+            serviceHeadline: 'Setup sesuai mesin.',
+            serviceHeadlineMuted: 'Sound sesuai karakter.',
+            serviceDescription: 'Dari penggantian frontpipe sampai custom valvetronic, setiap setup dirancang buat perform maksimal dan tetap nyaman dipakai.',
+            tires: 'Full system',
+            tiresDescription: 'Flow optimal, vibes racing, siap daily.',
+            oils: 'Silencer & resonator',
+            oilsDescription: 'Bass bulat, adem, atau silent mode.',
+            spareparts: 'Header custom',
+            sparepartsDescription: 'Welding TIG Argon, fitment presisi.',
             serviceBooking: 'Booking servis',
             serviceBookingDescription: 'Pilih jadwal dan outlet, tanpa antre lama.',
             seeOptions: 'Lihat pilihan',
             setSchedule: 'Atur jadwal',
-            catalogIntro: 'Pilihan untuk motor Anda',
-            catalogHeadline: 'Upgrade perjalanan.',
-            catalogHeadlineMuted: 'Mulai dari sini.',
-            searchProducts: 'Cari ban, oli, atau sparepart...',
+            catalogIntro: 'PILIH SETUP-NYA',
+            catalogHeadline: 'Anti dengerin suara standar.',
+            catalogHeadlineMuted: 'Pilih karakter suara kamu.',
             allProducts: 'Semua produk',
             serviceCategory: 'Layanan servis',
             resetFilters: 'Reset filter',
@@ -484,14 +469,14 @@ Alpine.data('planetBanApp', () => ({
             outOfStock: 'Habis',
             productsPreparing: 'Produk sedang disiapkan',
             productsPreparingDescription: 'Silakan kembali lagi untuk melihat katalog terbaru.',
-            nearby: 'Dekat dengan Anda',
-            findPitstop: 'Temukan pit stop',
-            nearest: 'terdekat.',
+            nearby: 'WORKSHOP EXPERIENCE',
+            findPitstop: 'Build your sound',
+            nearest: 'bareng Arisa Knalpot.',
             searchStores: 'Cari kota atau nama outlet...',
             bookHere: 'Booking di sini',
-            readyToRide: 'Siap jalan lebih jauh?',
-            bikeStartsHere: 'Motor prima dimulai di sini.',
-            planVisit: 'Atur jadwal servis Anda. Kami siapkan teknisi dan outlet pilihan.',
+            readyToRide: 'Sound standar? Not your vibe.',
+            bikeStartsHere: 'Saatnya upgrade suara mobilmu.',
+            planVisit: 'Konsultasi setup knalpot dan booking workshop. Daily drive approved, weekend ready.',
             bookingNow: 'Booking sekarang',
             bookingEyebrow: 'Atur jadwal kunjungan',
             bookingTitle: 'Booking servis & produk',
@@ -533,7 +518,7 @@ Alpine.data('planetBanApp', () => ({
             liveDemo: 'Simulasi aktivitas pelanggan',
             addedCart: 'menambahkan produk ke keranjang',
             bookedService: 'booking servis di outlet',
-            boughtTires: 'membeli ban motor',
+            boughtTires: 'upgrade knalpot mobil',
             customerNames: ['Rizky dari Bandung', 'Nadia dari Jakarta', 'Dimas dari Surabaya'],
         },
         en: {
@@ -542,6 +527,7 @@ Alpine.data('planetBanApp', () => ({
             navStores: 'Find a store',
             navBookingStatus: 'My booking',
             login: 'Sign in',
+            register: 'Register',
             accountMenu: 'Account menu',
             myAccount: 'My account',
             adminDashboard: 'Admin dashboard',
@@ -556,33 +542,32 @@ Alpine.data('planetBanApp', () => ({
             bookingService: 'Book a service',
             openToday: 'OPEN TODAY',
             serviceAvailable: 'Service available',
-            heroEyebrow: 'Your ride, refined.',
-            heroTitle: 'Ride at your best,',
-            heroSubtitle: 'without compromise.',
-            heroDescription: 'Precision care, trusted products, and expert mechanics. Everything your motorcycle needs, in one pit stop.',
-            bookNow: 'Book a service',
-            browseProducts: 'Explore products',
+            heroEyebrow: 'ARISA KNALPOT · BUILT FOR YOUR VIBE',
+            heroTitle: 'Look clean,',
+            heroSubtitle: 'sound unforgettable.',
+            heroDescription: 'Custom exhausts, precision welding, and the right sound setup. Maximum performance for daily drives and weekend runs.',
+            bookNow: 'Book the workshop',
+            browseProducts: 'Explore the catalog',
             happyCustomers: 'Happy customers',
             branches: 'Branches',
             completedServices: 'Services completed',
-            serviceIntro: 'Made for your journey',
-            serviceHeadline: 'One pit stop.',
-            serviceHeadlineMuted: 'Everything handled.',
-            serviceDescription: 'Consistent service and motorcycle essentials, handled by professional technicians at a nearby store.',
-            tires: 'Motorcycle tires',
-            tiresDescription: 'Maximum grip, ready for every road.',
-            oils: 'Oil & lubricants',
-            oilsDescription: 'A smoother engine, peak performance.',
-            spareparts: 'Spare parts',
-            sparepartsDescription: 'Hand-picked parts for a better ride.',
+            serviceIntro: 'BUILT IN THE WORKSHOP',
+            serviceHeadline: 'Engine-matched setup.',
+            serviceHeadlineMuted: 'A sound that feels like you.',
+            serviceDescription: 'From frontpipe upgrades to custom valvetronic, every setup is made for maximum performance and everyday comfort.',
+            tires: 'Full system',
+            tiresDescription: 'Optimized flow, racing vibes, daily ready.',
+            oils: 'Silencers & resonators',
+            oilsDescription: 'Round bass, mellow, or silent mode.',
+            spareparts: 'Custom headers',
+            sparepartsDescription: 'TIG Argon welding, precision fitment.',
             serviceBooking: 'Service booking',
             serviceBookingDescription: 'Choose your time and store, skip the long wait.',
             seeOptions: 'Explore options',
             setSchedule: 'Set a time',
-            catalogIntro: 'Picked for your motorcycle',
-            catalogHeadline: 'Upgrade your ride.',
-            catalogHeadlineMuted: 'Start right here.',
-            searchProducts: 'Search tires, oil, or spare parts...',
+            catalogIntro: 'PICK YOUR SETUP',
+            catalogHeadline: 'Standard sound? Not your vibe.',
+            catalogHeadlineMuted: 'Choose your sound.',
             allProducts: 'All products',
             serviceCategory: 'Service packages',
             resetFilters: 'Reset filters',
@@ -592,14 +577,14 @@ Alpine.data('planetBanApp', () => ({
             outOfStock: 'Sold out',
             productsPreparing: 'Products are on the way',
             productsPreparingDescription: 'Check back soon for our latest catalog.',
-            nearby: 'Close to you',
-            findPitstop: 'Find your nearest',
-            nearest: 'pit stop.',
+            nearby: 'WORKSHOP EXPERIENCE',
+            findPitstop: 'Build your sound',
+            nearest: 'with Arisa Knalpot.',
             searchStores: 'Search city or store name...',
             bookHere: 'Book at this store',
-            readyToRide: 'Ready to go further?',
-            bikeStartsHere: 'A better ride starts here.',
-            planVisit: 'Book a service. We will prepare the right technician and store for you.',
+            readyToRide: 'Standard sound? Not your vibe.',
+            bikeStartsHere: 'Give your car a new voice.',
+            planVisit: 'Talk through your exhaust setup and book the workshop. Daily-drive approved, weekend ready.',
             bookingNow: 'Book now',
             bookingEyebrow: 'Plan your visit',
             bookingTitle: 'Service & product booking',
@@ -695,7 +680,7 @@ Alpine.data('planetBanApp', () => ({
         const names = this.translations[this.locale].customerNames;
         const actions = ['addedCart', 'bookedService', 'boughtTires'];
         const action = actions[index];
-        const suffix = action === 'bookedService' ? ' Planet Ban' : '';
+        const suffix = action === 'bookedService' ? ' Arisa Knalpot' : '';
 
         return `${names[index]} ${this.t(action)}${suffix}`;
     },
@@ -706,137 +691,6 @@ Alpine.data('planetBanApp', () => ({
 
     get cartTotal() {
         return this.cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    },
-
-    get visibleCatalogCount() {
-        const products = this.$refs.catalogProducts?.querySelectorAll('[data-catalog-product]');
-
-        return products
-            ? [...products].filter((product) => this.matchesCatalogProduct(product.dataset)).length
-            : 0;
-    },
-
-    matchesCatalogProduct(product) {
-        const price = Number(product.price);
-        const search = this.searchProduct.trim().toLocaleLowerCase('id-ID');
-
-        if (this.selectedCategory !== 'all' && product.category !== this.selectedCategory) {
-            return false;
-        }
-
-        if (this.categoryDetail && product.tireGroup !== this.categoryDetail) {
-            return false;
-        }
-
-        if (search && !product.searchText.includes(search)) {
-            return false;
-        }
-
-        if (!Number.isFinite(price) || price < this.minimumPrice || price > this.maximumPrice) {
-            return false;
-        }
-
-        if (this.selectedBrand && !product.searchText.includes(this.selectedBrand)) {
-            return false;
-        }
-
-        if (this.selectedTireSize && product.size !== this.selectedTireSize) {
-            return false;
-        }
-
-        if (this.selectedPosition && product.position !== this.selectedPosition) {
-            return false;
-        }
-
-        if (this.selectedMaterial && product.material !== this.selectedMaterial) {
-            return false;
-        }
-
-        if (this.selectedDiameter && product.diameter !== this.selectedDiameter) {
-            return false;
-        }
-
-        if (this.selectedTireType && product.type !== this.selectedTireType) {
-            return false;
-        }
-
-        if (this.selectedMotorcycle) {
-            const option = this.$refs.motorcycleFilter?.selectedOptions[0];
-            const compatibleSizes = [option?.dataset.front, option?.dataset.rear]
-                .filter(Boolean)
-                .map((size) => size.toLocaleLowerCase('id-ID').replace(/[^a-z0-9]/g, ''));
-            const productSize = product.size.replace(/[^a-z0-9]/g, '');
-
-            if (product.category !== 'tire' || !compatibleSizes.includes(productSize)) {
-                return false;
-            }
-        }
-
-        return true;
-    },
-
-    formatRupiah(amount) {
-        return `Rp ${new Intl.NumberFormat('id-ID').format(Number(amount) || 0)}`;
-    },
-
-    filterCatalogByBrand(brand) {
-        this.selectedBrand = this.selectedBrand === brand ? '' : brand;
-        this.selectedCategory = 'all';
-        this.categoryDetail = '';
-
-        if (this.selectedBrand) {
-            this.selectedMotorcycle = '';
-            this.selectedTireSize = '';
-            this.selectedPosition = '';
-            this.selectedMaterial = '';
-            this.selectedDiameter = '';
-            this.selectedTireType = '';
-        }
-    },
-
-    sortCatalogProducts() {
-        const container = this.$refs.catalogProducts;
-
-        if (!container) {
-            return;
-        }
-
-        const products = [...container.querySelectorAll('[data-catalog-product]')];
-        const sorters = {
-            'price-asc': (a, b) => Number(a.dataset.price) - Number(b.dataset.price),
-            'price-desc': (a, b) => Number(b.dataset.price) - Number(a.dataset.price),
-            name: (a, b) => a.dataset.name.localeCompare(b.dataset.name, 'id'),
-            relevance: (a, b) => Number(a.dataset.order) - Number(b.dataset.order),
-        };
-        const sorter = sorters[this.catalogSort];
-
-        if (!sorter) {
-            console.error('Urutan katalog tidak didukung.', this.catalogSort);
-            return;
-        }
-
-        products.sort(sorter).forEach((product) => container.append(product));
-    },
-
-    applyCatalogFilters() {
-        this.$refs.catalogProducts?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    },
-
-    resetCatalogFilters() {
-        this.selectedCategory = 'all';
-        this.categoryDetail = '';
-        this.searchProduct = '';
-        this.selectedMotorcycle = '';
-        this.minimumPrice = 0;
-        this.maximumPrice = this.catalogPriceCeiling;
-        this.selectedBrand = '';
-        this.selectedTireSize = '';
-        this.selectedPosition = '';
-        this.selectedMaterial = '';
-        this.selectedDiameter = '';
-        this.selectedTireType = '';
-        this.catalogSort = 'relevance';
-        this.sortCatalogProducts();
     },
 
     openBookingModal(storeId = '') {

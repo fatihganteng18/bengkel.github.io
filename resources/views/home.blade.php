@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planet Ban - Solusi Otomotif Terpercaya</title>
+    <title>Arisa Knalpot - Knalpot Mobil & Workshop Performance</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Font Inter & Icons -->
     <script src="https://unpkg.com/@lucide/web"></script>
@@ -21,7 +21,7 @@
             <!-- Brand Logo -->
             <a href="{{ route('home') }}" class="flex items-center gap-2">
                 <div class="bg-brand-red text-white font-black italic text-2xl px-3 py-1 rounded-lg transform -skew-x-12">
-                    PLANET<span class="text-brand-yellow">BAN</span>
+                    Arisa<span class="text-brand-yellow"> Knalpot</span>
                 </div>
             </a>
 

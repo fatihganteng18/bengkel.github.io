@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth theme-light">
+<html lang="id" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f8fafc">
-    <title>Planet Ban | Bengkel Motor, Ban & Servis Premium</title>
+    <meta name="theme-color" content="#090d13">
+    <title>Arisa Knalpot | Knalpot Mobil & Workshop Performance</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body
@@ -25,10 +25,10 @@
     @endif
 
     <header class="site-nav relative z-40">
-        <div class="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('home') }}" class="brand-mark flex shrink-0 items-center gap-2" aria-label="Planet Ban, beranda">
-                <span class="brand-symbol">P</span>
-                <span class="text-lg font-black italic tracking-tight text-white">PLANET<span class="text-yellow-300">BAN</span></span>
+        <div class="site-header-inner mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('home') }}" class="brand-mark flex shrink-0 items-center gap-2" aria-label="Arisa Knalpot, beranda">
+                <span class="brand-symbol">E</span>
+                <span class="text-lg font-black italic tracking-tight text-white">Arisa<span class="text-lime-300"> Knalpot</span></span>
             </a>
 
             <nav class="hidden items-center gap-8 text-sm font-semibold text-slate-600 dark:text-slate-300 lg:flex" aria-label="Navigasi utama">
@@ -38,8 +38,8 @@
                 <a class="nav-link" href="{{ route('booking.status') }}" x-text="t('navBookingStatus')">Cek booking</a>
             </nav>
 
-            <div class="flex items-center gap-2">
-                <div class="relative block">
+            <div class="site-header-actions flex items-center gap-2">
+                <div class="site-language-control relative block">
                     <button type="button" @click="languageMenuOpen = !languageMenuOpen" @click.outside="languageMenuOpen = false" :aria-expanded="languageMenuOpen" aria-label="Pilih bahasa" class="locale-trigger inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 px-3 text-xs font-extrabold text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3 12h18M12 3a15 15 0 010 18m0-18a15 15 0 000 18"/></svg>
                         <span x-text="locale.toUpperCase()">ID</span>
@@ -54,7 +54,9 @@
                     <svg x-show="isDark" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
                     <svg x-show="!isDark" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.9 13A8.5 8.5 0 1111 3.1 6.7 6.7 0 0020.9 13z"/></svg>
                 </button>
-                @include('components.account-menu')
+                <div class="site-account-control">
+                    @include('components.account-menu')
+                </div>
                 <button
                     type="button"
                     @click="cartDrawerOpen = true"
@@ -77,6 +79,20 @@
                 <a @click="mobileMenuOpen = false" href="#toko" class="mobile-nav-link" x-text="t('navStores')">Lokasi outlet</a>
                 <a @click="mobileMenuOpen = false" href="{{ route('booking.status') }}" class="mobile-nav-link" x-text="t('mobileBookingStatus')">Cek status booking</a>
                 <button @click="openBookingModal()" class="mobile-nav-link text-left" x-text="t('bookingService')">Booking servis</button>
+                <div class="mt-2 grid grid-cols-2 gap-2 border-t border-white/10 pt-3 sm:grid-cols-3">
+                    @guest
+                        <a href="{{ route('login') }}" class="mobile-nav-link rounded-xl border border-white/10 text-center" x-text="t('login')">Masuk</a>
+                        <a href="{{ route('register') }}" class="mobile-nav-link rounded-xl bg-yellow-300 text-center font-extrabold text-slate-950" x-text="t('register')">Daftar</a>
+                    @else
+                        <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : (Auth::user()->role === 'cashier' ? route('cashir.dashboard') : route('account.dashboard')) }}" class="mobile-nav-link rounded-xl border border-white/10 text-center" x-text="t('{{ Auth::user()->role === 'admin' ? 'adminDashboard' : (Auth::user()->role === 'cashier' ? 'cashierDashboard' : 'myAccount') }}')">Akun saya</a>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="mobile-nav-link w-full rounded-xl border border-white/10 text-center" x-text="t('logout')">Keluar</button>
+                        </form>
+                    @endguest
+                    <button type="button" @click="setLanguage('id')" class="mobile-nav-link rounded-xl border border-white/10 text-center" :aria-pressed="locale === 'id'">🇮🇩 Bahasa Indonesia</button>
+                    <button type="button" @click="setLanguage('en')" class="mobile-nav-link rounded-xl border border-white/10 text-center" :aria-pressed="locale === 'en'">🇬🇧 English</button>
+                </div>
             </div>
         </nav>
     </header>
@@ -92,15 +108,15 @@
                         <span class="status-pulse h-2 w-2 rounded-full bg-emerald-300"></span>
                         <span x-text="t('openToday')">BUKA HARI INI</span> <span class="text-emerald-500/60 dark:text-emerald-100/60">·</span> <span x-text="t('serviceAvailable')">Layanan tersedia</span>
                     </div>
-                    <p class="mb-4 text-xs font-extrabold uppercase tracking-[.28em] text-cyan-700 dark:text-cyan-300" x-text="t('heroEyebrow')">Your ride, refined.</p>
+                    <p class="mb-4 text-xs font-extrabold uppercase tracking-[.28em] text-cyan-700 dark:text-cyan-300" x-text="t('heroEyebrow')">ARISA KNALPOT · BUILT FOR YOUR VIBE</p>
                     <h1 class="hero-title max-w-3xl text-5xl font-black leading-[1.02] tracking-[-.055em] text-slate-950 dark:text-white sm:text-6xl lg:text-[4.5rem]">
-                        <span x-text="t('heroTitle')">Performa motor,</span><br>
-                        <span class="gradient-shimmer" x-text="t('heroSubtitle')">tanpa kompromi.</span>
+                        <span x-text="t('heroTitle')">Auto ganteng,</span><br>
+                        <span class="gradient-shimmer" x-text="t('heroSubtitle')">suara punya karakter.</span>
                     </h1>
-                    <p class="hero-description mt-6 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300 sm:text-lg" x-text="t('heroDescription')">Perawatan presisi, produk terjamin, dan mekanik ahli. Semua yang motor Anda butuhkan, dalam satu pit stop.</p>
+                    <p class="hero-description mt-6 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300 sm:text-lg" x-text="t('heroDescription')">Knalpot custom, welding presisi, dan setup suara yang pas. Perform maksimal buat daily drive sampai weekend run.</p>
                     <div class="mt-9 flex flex-col gap-3 sm:flex-row">
                         <button type="button" @click="openBookingModal()" class="action-button action-button-primary group">
-                            <span x-text="t('bookNow')">Booking servis sekarang</span>
+                            <span x-text="t('bookNow')">Booking workshop</span>
                             <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
                         </button>
                         <a href="#katalog" class="action-button action-button-glass group">
@@ -118,20 +134,20 @@
                 <div class="hero-visual relative mx-auto w-full max-w-[610px]">
                     <div class="hero-image-frame image-shine group relative overflow-hidden rounded-[2rem] border border-white/15 bg-slate-800/50 shadow-2xl">
                         <img
-                            src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1400&q=85"
-                            alt="Motor siap untuk perjalanan dengan perawatan profesional"
+                            src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=85"
+                            alt="Mobil performance dengan setup otomotif modern"
                             class="hero-image h-[390px] w-full object-cover sm:h-[480px]"
                             fetchpriority="high"
                         >
                         <div class="absolute inset-0 bg-gradient-to-t from-[#090d13]/90 via-[#090d13]/10 to-transparent"></div>
                         <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 sm:p-8">
                             <div>
-                                <span class="text-[10px] font-black uppercase tracking-[.22em] text-yellow-300">Pit stop premium</span>
-                                <p class="mt-2 text-2xl font-black text-white sm:text-3xl">Ride further.<br>Worry less.</p>
+                                <span class="text-[10px] font-black uppercase tracking-[.22em] text-lime-300">Custom exhaust workshop</span>
+                                <p class="mt-2 text-2xl font-black text-white sm:text-3xl">Sound different.<br>Drive your vibe.</p>
                             </div>
                             <div class="hidden rounded-2xl border border-white/20 bg-black/30 p-4 text-right backdrop-blur-xl sm:block">
                                 <p class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Standar layanan</p>
-                                <p class="mt-1 text-lg font-black text-white">Planet<span class="text-yellow-300">Care</span></p>
+                                <p class="mt-1 text-lg font-black text-white">TIG<span class="text-lime-300"> Argon</span></p>
                             </div>
                         </div>
                     </div>
@@ -154,25 +170,25 @@
         <section id="layanan" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
             <div class="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
-                    <p class="section-kicker" x-text="t('serviceIntro')">Dibuat untuk perjalanan Anda</p>
-                    <h2 class="section-title mt-3"><span x-text="t('serviceHeadline')">Satu pit stop.</span><br><span class="muted-heading text-slate-500" x-text="t('serviceHeadlineMuted')">Banyak beresnya.</span></h2>
+                    <p class="section-kicker" x-text="t('serviceIntro')">BUILT IN THE WORKSHOP</p>
+                    <h2 class="section-title mt-3"><span x-text="t('serviceHeadline')">Setup sesuai mesin.</span><br><span class="muted-heading text-slate-500" x-text="t('serviceHeadlineMuted')">Sound sesuai karakter.</span></h2>
                 </div>
-                <p class="secondary-copy max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400" x-text="t('serviceDescription')">Servis dan kebutuhan motor dengan standar yang konsisten, ditangani oleh teknisi profesional di outlet terdekat.</p>
+                <p class="secondary-copy max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400" x-text="t('serviceDescription')">Dari penggantian frontpipe sampai custom valvetronic, setiap setup dirancang buat perform maksimal dan tetap nyaman dipakai.</p>
             </div>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <a href="#katalog" @click="selectedCategory = 'tire'" class="service-card group">
+                <a href="#katalog" class="service-card group">
                     <span class="service-icon text-yellow-300"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path stroke-linecap="round" d="M12 3.5v5m0 7v5m8.5-8.5h-5m-7 0h-5"/></svg></span>
-                    <h3 x-text="t('tires')">Ban motor</h3><p x-text="t('tiresDescription')">Grip maksimal, siap segala kondisi jalan.</p>
+                    <h3 x-text="t('tires')">Full system</h3><p x-text="t('tiresDescription')">Flow optimal, vibes racing, siap daily.</p>
                     <span class="service-arrow"><span x-text="t('seeOptions')">Lihat pilihan</span> <span class="transition-transform group-hover:translate-x-1">→</span></span>
                 </a>
-                <a href="#katalog" @click="selectedCategory = 'oil'" class="service-card group">
+                <a href="#katalog" class="service-card group">
                     <span class="service-icon text-cyan-300"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3.5s6 6.4 6 11a6 6 0 01-12 0c0-4.6 6-11 6-11z"/><path stroke-linecap="round" d="M9 15.5a3 3 0 003 3"/></svg></span>
-                    <h3 x-text="t('oils')">Oli & pelumas</h3><p x-text="t('oilsDescription')">Mesin halus, performa tetap optimal.</p>
+                    <h3 x-text="t('oils')">Silencer & resonator</h3><p x-text="t('oilsDescription')">Bass bulat, adem, atau silent mode.</p>
                     <span class="service-arrow"><span x-text="t('seeOptions')">Lihat pilihan</span> <span class="transition-transform group-hover:translate-x-1">→</span></span>
                 </a>
-                <a href="#katalog" @click="selectedCategory = 'sparepart'" class="service-card group">
+                <a href="#katalog" class="service-card group">
                     <span class="service-icon text-violet-300"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a5 5 0 00-6.5 6.5L3.8 17.2a2.1 2.1 0 003 3l4.4-4.4a5 5 0 006.5-6.5l-3 3-3.5-3.5 3.5-3.5z"/></svg></span>
-                    <h3 x-text="t('spareparts')">Sparepart</h3><p x-text="t('sparepartsDescription')">Komponen pilihan untuk kenyamanan berkendara.</p>
+                    <h3 x-text="t('spareparts')">Header custom</h3><p x-text="t('sparepartsDescription')">Welding TIG Argon, fitment presisi.</p>
                     <span class="service-arrow"><span x-text="t('seeOptions')">Lihat pilihan</span> <span class="transition-transform group-hover:translate-x-1">→</span></span>
                 </a>
                 <button type="button" @click="openBookingModal()" class="service-card group text-left">
@@ -183,61 +199,42 @@
             </div>
         </section>
 
-        @php
-            $catalogBrands = [
-                ['name' => 'ASPIRA PREMIO', 'filter' => 'aspira', 'style' => 'text-orange-600 italic'],
-                ['name' => 'PLANET BAN', 'filter' => 'planet', 'style' => 'text-blue-900 font-black italic'],
-                ['name' => 'MICHELIN', 'filter' => 'michelin', 'style' => 'text-blue-700 italic'],
-                ['name' => 'IRC', 'filter' => 'irc', 'style' => 'text-indigo-700 italic'],
-                ['name' => 'PIRELLI', 'filter' => 'pirelli', 'style' => 'text-red-600 italic'],
-                ['name' => 'ECOGREEN', 'filter' => 'ecogreen', 'style' => 'text-emerald-700 italic'],
-                ['name' => 'PRESA', 'filter' => 'presa', 'style' => 'text-rose-600 italic'],
-                ['name' => 'SWALLOW', 'filter' => 'swallow', 'style' => 'text-red-700 italic'],
-                ['name' => 'DUNLOP', 'filter' => 'dunlop', 'style' => 'text-yellow-600 italic'],
-                ['name' => 'KENDA', 'filter' => 'kenda', 'style' => 'text-red-600 italic'],
-                ['name' => 'FDR', 'filter' => 'fdr', 'style' => 'text-red-600 italic'],
-            ];
-            $catalogMaxPrice = max(643000, (int) ceil($products->max(fn ($product) => $product->effective_price) ?? 0));
-            $catalogTireSizes = $products->map(function ($product) {
-                preg_match('/\d{2,3}\s*\/\s*\d{2}\s*[- ]?\s*\d{2}/', $product->name, $matches);
-
-                return $matches[0] ?? null;
-            })->filter()->unique()->values();
-        @endphp
-        <section id="katalog" x-init="catalogPriceCeiling = {{ $catalogMaxPrice }}; maximumPrice = {{ $catalogMaxPrice }}" class="catalog-section scroll-mt-24 border-y border-slate-200 bg-slate-50 py-12 lg:py-16">
+        <section id="katalog" class="catalog-section scroll-mt-24 border-y border-slate-200 bg-slate-50 py-12 lg:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="brand-carousel-shell relative mb-6">
-                    <button type="button" @click="$refs.brandRail.scrollBy({ left: -320, behavior: 'smooth' })" class="brand-carousel-arrow left-0" aria-label="Geser merek ke kiri">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/></svg>
-                    </button>
-                    <div x-ref="brandRail" class="brand-carousel-track flex gap-3 overflow-x-auto px-10 py-1" aria-label="Merek produk">
-                        @foreach($catalogBrands as $brand)
-                            <button type="button" @click="filterCatalogByBrand('{{ $brand['filter'] }}')" :aria-pressed="selectedBrand === '{{ $brand['filter'] }}'" :class="selectedBrand === '{{ $brand['filter'] }}' && 'brand-tile-active'" class="brand-tile flex h-[68px] min-w-[92px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 shadow-sm transition hover:border-blue-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:min-w-[104px]" aria-label="Filter merek {{ $brand['name'] }}">
-                                <span class="text-center text-[11px] font-black leading-tight tracking-tight {{ $brand['style'] }}">{{ $brand['name'] }}</span>
-                            </button>
+                <div class="mb-7">
+                    <p class="section-kicker">ARISA KNALPOT · SHOP BY SOUND</p>
+                    <h2 class="section-title mt-3">Anti dengerin suara standar.<br><span class="gradient-shimmer">Build your own vibe.</span></h2>
+                </div>
+                <div class="mb-6">
+                    <p class="mb-3 text-xs font-black uppercase tracking-[.2em] text-cyan-300">11 ways to sound like you</p>
+                    <div class="flex gap-2 overflow-x-auto pb-2" aria-label="Filter kategori knalpot">
+                        <a href="{{ route('home', request()->except(['page', 'sub_category'])) }}#katalog" @class(['brand-tile shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition', 'brand-tile-active border-cyan-300 bg-slate-800' => empty($filters['sub_category']), 'border-slate-700 bg-slate-900 text-slate-200' => ! empty($filters['sub_category'])])>Semua setup</a>
+                        @foreach($catalogSubCategories as $subCategory)
+                            <a href="{{ route('home', array_merge(request()->except('page'), ['sub_category' => $subCategory])) }}#katalog" @class(['brand-tile shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition', 'brand-tile-active border-cyan-300 bg-slate-800' => ($filters['sub_category'] ?? '') === $subCategory, 'border-slate-700 bg-slate-900 text-slate-200' => ($filters['sub_category'] ?? '') !== $subCategory])>{{ $subCategory }}</a>
                         @endforeach
                     </div>
-                    <button type="button" @click="$refs.brandRail.scrollBy({ left: 320, behavior: 'smooth' })" class="brand-carousel-arrow right-0" aria-label="Geser merek ke kanan">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                    </button>
                 </div>
 
+                <form method="GET" action="{{ route('home') }}" class="catalog-filter-form">
+                    @if(! empty($filters['sub_category']))
+                        <input type="hidden" name="sub_category" value="{{ $filters['sub_category'] }}">
+                    @endif
                 <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center">
                     <label class="catalog-search flex h-11 w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 md:max-w-[350px]">
                         <svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path stroke-linecap="round" d="m16 16 5 5"/></svg>
-                        <input type="search" x-model="searchProduct" data-product-search placeholder="Cari ban buat motormu disini" class="w-full bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-400">
+                        <input type="search" name="q" value="{{ $filters['q'] ?? '' }}" data-product-search placeholder="Cari knalpot, diameter, atau karakter suara..." class="w-full bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-400">
                     </label>
                     <p class="text-xs text-slate-500" aria-live="polite">
-                        Menampilkan <strong class="font-bold text-slate-800" x-text="visibleCatalogCount">0</strong>
-                        dari {{ $products->count() }} Data
+                        Menampilkan <strong class="font-bold text-slate-800">{{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }}</strong>
+                        dari {{ $products->total() }} Data
                     </p>
                     <label class="ml-auto flex items-center gap-2 text-xs text-slate-500">
                         <span>Urutkan</span>
-                        <select x-model="catalogSort" @change="sortCatalogProducts()" class="h-10 min-w-36 rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-600 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-100">
-                            <option value="relevance">Pilih</option>
-                            <option value="price-asc">Harga terendah</option>
-                            <option value="price-desc">Harga tertinggi</option>
-                            <option value="name">Nama produk</option>
+                        <select name="sort" class="h-10 min-w-36 rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-600 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-100">
+                            <option value="relevance" @selected(($filters['sort'] ?? 'relevance') === 'relevance')>Pilih</option>
+                            <option value="price-asc" @selected(($filters['sort'] ?? '') === 'price-asc')>Harga terendah</option>
+                            <option value="price-desc" @selected(($filters['sort'] ?? '') === 'price-desc')>Harga tertinggi</option>
+                            <option value="name" @selected(($filters['sort'] ?? '') === 'name')>Nama produk</option>
                         </select>
                     </label>
                 </div>
@@ -246,167 +243,85 @@
                     <aside class="catalog-filter-panel overflow-hidden rounded-xl border border-slate-200 bg-white" aria-label="Filter produk">
                         <div class="border-b border-slate-200 px-4 py-3">
                             <div class="mb-2 flex items-center justify-between">
-                                <h2 class="text-sm font-extrabold text-slate-900">Filter</h2>
-                                <button type="button" @click="resetCatalogFilters()" class="text-[11px] font-semibold text-blue-700 hover:underline">Reset</button>
+                                <h2 class="text-sm font-extrabold text-slate-900">Filter setup</h2>
+                                <a href="{{ route('home') }}#katalog" class="text-[11px] font-semibold text-blue-700 hover:underline">Reset</a>
                             </div>
-                            <h3 class="mb-2 text-xs font-bold text-slate-800">Kategori</h3>
-                            <div class="space-y-1.5">
+                            <div class="space-y-2">
                                 <label class="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
-                                    <input type="radio" name="catalog-category" value="all" x-model="selectedCategory" @change="categoryDetail = ''" class="accent-blue-700">
-                                    Semua produk
+                                    <input type="radio" name="category" value="all" @checked(($filters['category'] ?? 'all') === 'all')>
+                                    Semua setup
                                 </label>
                                 <label class="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
-                                    <input type="radio" name="catalog-category" value="tire" x-model="selectedCategory" @change="categoryDetail = ''" class="accent-blue-700">
-                                    Ban
+                                    <input type="radio" name="category" value="exhaust" @checked(($filters['category'] ?? '') === 'exhaust')>
+                                    Knalpot mobil
                                 </label>
-                                <div class="ml-6 space-y-1.5 border-l border-slate-100 pl-3">
-                                    @foreach(['Matic', 'Bebek', 'Sport', 'Big Matic'] as $tireCategory)
-                                        <button type="button" @click="selectedCategory = 'tire'; categoryDetail = '{{ strtolower(str_replace(' ', '-', $tireCategory)) }}'" class="block text-left text-[11px] text-slate-500 transition hover:text-blue-700" :class="categoryDetail === '{{ strtolower(str_replace(' ', '-', $tireCategory)) }}' && 'font-bold text-blue-700'">Ban Motor {{ $tireCategory }}</button>
-                                    @endforeach
-                                </div>
-                                @foreach(['oil' => 'Oli Motor', 'sparepart' => 'Sparepart', 'service' => 'Servis'] as $category => $label)
-                                    <label class="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
-                                        <input type="radio" name="catalog-category" value="{{ $category }}" x-model="selectedCategory" @change="categoryDetail = ''" class="accent-blue-700">
-                                        {{ $label }}
-                                    </label>
-                                @endforeach
                             </div>
                         </div>
 
                         <div class="border-b border-slate-200 px-4 py-3">
-                            <label for="motorcycle-filter" class="mb-2 block text-xs font-bold text-slate-800">Kompatibilitas untuk motor</label>
-                            <select id="motorcycle-filter" x-ref="motorcycleFilter" x-model="selectedMotorcycle" class="h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600 outline-none focus:border-blue-700">
-                                <option value="">Cari tipe motormu di sini</option>
-                                @foreach($motorcycles as $motorcycle)
-                                    <option value="{{ $motorcycle->id }}" data-front="{{ $motorcycle->front_tire_size }}" data-rear="{{ $motorcycle->rear_tire_size }}">{{ $motorcycle->brand }} {{ $motorcycle->model_name }}</option>
-                                @endforeach
-                            </select>
+                            <h3 class="mb-2 text-xs font-bold text-slate-800">Harga</h3>
+                            <div class="flex items-center gap-2">
+                                <label class="catalog-price-input flex min-w-0 flex-1 items-center gap-1 rounded-lg border border-slate-300 px-2">
+                                    <span class="text-[10px] text-slate-400">Rp</span>
+                                    <input type="number" name="min_price" min="0" value="{{ $filters['min_price'] ?? '' }}" placeholder="Min" class="w-full min-w-0 py-2 text-[10px] text-slate-700 outline-none">
+                                </label>
+                                <span class="text-xs text-slate-400">–</span>
+                                <label class="catalog-price-input flex min-w-0 flex-1 items-center gap-1 rounded-lg border border-slate-300 px-2">
+                                    <span class="text-[10px] text-slate-400">Rp</span>
+                                    <input type="number" name="max_price" min="0" value="{{ $filters['max_price'] ?? '' }}" placeholder="Maks" class="w-full min-w-0 py-2 text-[10px] text-slate-700 outline-none">
+                                </label>
+                            </div>
                         </div>
 
                         <div class="border-b border-slate-200 px-4 py-3">
-                            <div class="mb-2 flex items-center justify-between">
-                                <h3 class="text-xs font-bold text-slate-800">Harga</h3>
-                                <button type="button" @click="priceFilterOpen = !priceFilterOpen" :aria-expanded="priceFilterOpen" class="text-slate-500" aria-label="Tutup rentang harga">
-                                    <svg class="h-3.5 w-3.5 transition-transform" :class="priceFilterOpen && 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
-                                </button>
-                            </div>
-                            <div x-show="priceFilterOpen" x-transition>
-                                <div class="mb-2 flex justify-between text-[9px] text-slate-500">
-                                    <span x-text="formatRupiah(minimumPrice)"></span>
-                                    <span x-text="formatRupiah(maximumPrice)"></span>
-                                </div>
-                                <div class="relative mb-4 h-5">
-                                    <input type="range" min="0" max="{{ $catalogMaxPrice }}" step="1000" x-model.number="minimumPrice" @input="minimumPrice = Math.min(minimumPrice, maximumPrice)" class="catalog-range absolute inset-0 w-full">
-                                    <input type="range" min="0" max="{{ $catalogMaxPrice }}" step="1000" x-model.number="maximumPrice" @input="maximumPrice = Math.max(maximumPrice, minimumPrice)" class="catalog-range catalog-range-top absolute inset-0 w-full">
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <label class="catalog-price-input flex min-w-0 flex-1 items-center gap-1 rounded-lg border border-slate-300 px-2">
-                                        <span class="text-[10px] text-slate-400">Rp</span>
-                                        <input type="number" min="0" max="{{ $catalogMaxPrice }}" x-model.number="minimumPrice" @input="minimumPrice = Math.min(minimumPrice, maximumPrice)" class="w-full min-w-0 py-2 text-[10px] text-slate-700 outline-none">
-                                    </label>
-                                    <span class="text-xs text-slate-400">–</span>
-                                    <label class="catalog-price-input flex min-w-0 flex-1 items-center gap-1 rounded-lg border border-slate-300 px-2">
-                                        <span class="text-[10px] text-slate-400">Rp</span>
-                                        <input type="number" min="0" max="{{ $catalogMaxPrice }}" x-model.number="maximumPrice" @input="maximumPrice = Math.max(maximumPrice, minimumPrice)" class="w-full min-w-0 py-2 text-[10px] text-slate-700 outline-none">
-                                    </label>
-                                </div>
-                            </div>
+                            <label for="catalog-brand" class="mb-2 block text-xs font-bold text-slate-800">Merek</label>
+                            <input id="catalog-brand" type="search" name="brand" value="{{ $filters['brand'] ?? '' }}" placeholder="Contoh: Apex" class="h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
                         </div>
 
-                        <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
-                            <summary>Merek</summary>
-                            <select x-model="selectedBrand" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
-                                <option value="">Semua merek</option>
-                                @foreach($catalogBrands as $brand)
-                                    <option value="{{ $brand['filter'] }}">{{ $brand['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </details>
-                        <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
-                            <summary>Ukuran Ban</summary>
-                            <select x-model="selectedTireSize" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
-                                <option value="">Semua ukuran</option>
-                                @foreach($catalogTireSizes as $tireSize)
-                                    <option value="{{ strtolower($tireSize) }}">{{ $tireSize }}</option>
-                                @endforeach
-                            </select>
-                        </details>
-                        <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
-                            <summary>Posisi Ban</summary>
-                            <select x-model="selectedPosition" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
-                                <option value="">Semua posisi</option>
-                                <option value="depan">Depan</option>
-                                <option value="belakang">Belakang</option>
-                            </select>
-                        </details>
                         <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
                             <summary>Material</summary>
-                            <select x-model="selectedMaterial" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
+                            <select name="material" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
                                 <option value="">Semua material</option>
-                                <option value="karet">Karet</option>
-                            </select>
-                        </details>
-                        <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
-                            <summary>Diameter</summary>
-                            <select x-model="selectedDiameter" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
-                                <option value="">Semua diameter</option>
-                                @foreach($catalogTireSizes->map(fn ($size) => substr($size, strrpos($size, '-') + 1))->unique() as $diameter)
-                                    <option value="{{ $diameter }}">{{ $diameter }} inci</option>
+                                @foreach(['Stainless Steel', 'Galvanis', 'Karbon'] as $material)
+                                    <option value="{{ $material }}" @selected(($filters['material'] ?? '') === $material)>{{ $material }}</option>
                                 @endforeach
                             </select>
                         </details>
                         <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
-                            <summary>Tipe</summary>
-                            <select x-model="selectedTireType" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
-                                <option value="">Semua tipe</option>
-                                <option value="tubeless">Tubeless</option>
-                                <option value="regular">Regular</option>
+                            <summary>Inlet / diameter</summary>
+                            <select name="inlet_size" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
+                                <option value="">Semua diameter</option>
+                                @foreach(['1.5 inch', '2.0 inch', '2.25 inch', '2.5 inch', '3.0 inch'] as $inlet)
+                                    <option value="{{ $inlet }}" @selected(($filters['inlet_size'] ?? '') === $inlet)>{{ $inlet }}</option>
+                                @endforeach
+                            </select>
+                        </details>
+                        <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
+                            <summary>Karakter suara</summary>
+                            <select name="sound_type" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
+                                <option value="">Semua karakter</option>
+                                @foreach(['Suara Halus Standart', 'Bass Bulat / Adem', 'Gahar', 'Silent'] as $sound)
+                                    <option value="{{ $sound }}" @selected(($filters['sound_type'] ?? '') === $sound)>{{ $sound }}</option>
+                                @endforeach
+                            </select>
+                        </details>
+                        <details class="catalog-filter-accordion border-b border-slate-200 px-4 py-3">
+                            <summary>Kapasitas mesin</summary>
+                            <select name="engine_cc" class="mt-3 h-9 w-full rounded-lg border border-slate-200 bg-white px-2 text-[11px] text-slate-600">
+                                <option value="">Semua kapasitas</option>
+                                @foreach(['1.0cc - 1.6cc', '1.8cc - 2.0cc', '2.5cc - 3.5cc'] as $engineRange)
+                                    <option value="{{ $engineRange }}" @selected(($filters['engine_cc'] ?? '') === $engineRange)>{{ $engineRange }}</option>
+                                @endforeach
                             </select>
                         </details>
                         <div class="p-3">
-                            <button type="button" @click="applyCatalogFilters()" class="w-full rounded-full bg-blue-700 px-4 py-3 text-xs font-extrabold text-white shadow-sm transition hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">Tampilkan</button>
+                            <button type="submit" class="w-full rounded-full bg-blue-700 px-4 py-3 text-xs font-extrabold text-white shadow-sm transition hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">Tampilkan</button>
                         </div>
                     </aside>
 
-                    <div x-ref="catalogProducts" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 2xl:grid-cols-4">
                     @forelse($products as $product)
-                        @php
-                            preg_match('/(\d{2,3})\s*\/\s*\d{2}\s*[- ]?\s*(\d{2})/', $product->name, $sizeParts);
-                            preg_match('/\d{2,3}\s*\/\s*\d{2}\s*[- ]?\s*(\d{2})/', $product->name, $diameterMatch);
-                            preg_match('/\d{2,3}\s*\/\s*\d{2}\s*[- ]?\s*\d{2}/', $product->name, $sizeMatch);
-                            $productBrand = strtolower(strtok($product->name, ' '));
-                            $tireWidth = (int) ($sizeParts[1] ?? 0);
-                            $tireDiameter = (int) ($diameterMatch[1] ?? 0);
-                            $tireGroup = $product->category !== 'tire'
-                                ? ''
-                                : (str_contains(strtolower($product->name), 'sport')
-                                    ? 'sport'
-                                    : ($tireDiameter >= 16
-                                        ? ($tireWidth >= 100 ? 'sport' : 'bebek')
-                                        : ($tireWidth >= 150 ? 'big-matic' : 'matic')));
-                            $normalizedProductName = strtolower($product->name);
-                            $productType = str_contains($normalizedProductName, 'tubeless') || str_contains($normalizedProductName, 'tubelless')
-                                ? 'tubeless'
-                                : 'regular';
-                        @endphp
                         <article
-                            x-show="matchesCatalogProduct($el.dataset)"
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="translate-y-2 opacity-0"
-                            x-transition:enter-end="translate-y-0 opacity-100"
-                            data-catalog-product
-                            data-order="{{ $loop->index }}"
-                            data-name="{{ strtolower($product->name) }}"
-                            data-search-text="{{ strtolower($product->name . ' ' . ($product->description ?? '') . ' ' . $product->category . ' ' . $productBrand) }}"
-                            data-category="{{ $product->category }}"
-                            data-price="{{ $product->effective_price }}"
-                            data-brand="{{ $productBrand }}"
-                            data-size="{{ strtolower($sizeMatch[0] ?? '') }}"
-                            data-diameter="{{ $diameterMatch[1] ?? '' }}"
-                            data-type="{{ $productType }}"
-                            data-position="{{ str_contains($normalizedProductName, 'depan') ? 'depan' : (str_contains($normalizedProductName, 'belakang') ? 'belakang' : '') }}"
-                            data-material="{{ $product->category === 'tire' ? 'karet' : '' }}"
-                            data-tire-group="{{ $tireGroup }}"
                             class="catalog-product-card group overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg"
                         >
                             <div class="relative flex h-32 items-center justify-center bg-white p-3 sm:h-40">
@@ -416,11 +331,9 @@
                                     aria-label="Lihat detail {{ $product->name }}"
                                 >
                                     @if($product->image)
-                                        <img src="{{ $product->image }}" alt="{{ $product->name }}" loading="lazy" class="h-full w-full object-contain drop-shadow-md">
-                                    @elseif($product->category === 'tire')
-                                        <img src="{{ asset('images/products/planet-ban-tire.svg') }}" alt="{{ $product->name }}" loading="lazy" class="h-full w-full object-contain drop-shadow-md">
+                                        <img src="{{ $product->image }}" alt="{{ $product->name }}" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('images/products/exhaust-sample.svg') }}'" class="h-full w-full object-contain drop-shadow-md">
                                     @else
-                                        <span class="text-5xl" aria-hidden="true">{{ $product->category === 'oil' ? '🛢️' : '⚙️' }}</span>
+                                        <span class="text-5xl" aria-hidden="true">⌁</span>
                                     @endif
                                 </a>
                                 @if($product->has_discount)
@@ -429,6 +342,11 @@
                             </div>
                             <div class="px-3 pb-3 pt-1 sm:px-4 sm:pb-4">
                                 <a href="{{ route('product.show', $product) }}" class="line-clamp-2 min-h-9 text-[10px] font-medium leading-4 text-slate-600 hover:text-blue-800 sm:text-[11px]">{{ $product->name }}</a>
+                                <p class="mt-1 line-clamp-1 text-[9px] font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">{{ $product->sub_category }}</p>
+                                <div class="mt-2 flex flex-wrap gap-1">
+                                    <span class="rounded-full bg-slate-100 px-2 py-1 text-[8px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $product->inlet_size }}</span>
+                                    <span class="rounded-full bg-slate-100 px-2 py-1 text-[8px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $product->sound_type }}</span>
+                                </div>
                                 <div class="mt-1 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                                     @if($product->has_discount)
                                         <span class="text-[9px] text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
@@ -439,7 +357,7 @@
                                     <p class="mt-0.5 text-[9px] font-bold text-red-600">Hemat {{ $product->discount_percentage }}%</p>
                                 @endif
                                 <div class="mt-3 flex items-center gap-2 border-t border-slate-100 pt-2">
-                                    <button type="button" @click="addToCartFromButton($el)" data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}" data-product-price="{{ $product->effective_price }}" data-product-image="{{ $product->image ?? ($product->category === 'tire' ? asset('images/products/planet-ban-tire.svg') : '') }}" data-product-stock="{{ $product->stock }}" :disabled="{{ $product->stock < 1 ? 'true' : 'false' }}" class="flex h-8 flex-1 items-center justify-center rounded-lg border border-blue-700 text-[10px] font-bold text-blue-700 transition hover:bg-blue-50 disabled:opacity-40">
+                                    <button type="button" @click="addToCartFromButton($el)" data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}" data-product-price="{{ $product->effective_price }}" data-product-image="{{ $product->image }}" data-product-stock="{{ $product->stock }}" :disabled="{{ $product->stock < 1 ? 'true' : 'false' }}" class="flex h-8 flex-1 items-center justify-center rounded-lg border border-blue-700 text-[10px] font-bold text-blue-700 transition hover:bg-blue-50 disabled:opacity-40">
                                         <span x-text="t('addToCart')"></span>
                                     </button>
                                     <button type="button" @click="openBookingModalForProduct($el)" data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}" data-product-price="{{ $product->effective_price }}" class="flex h-8 w-9 items-center justify-center rounded-lg bg-blue-700 text-white transition hover:bg-blue-800" aria-label="Booking {{ $product->name }}">
@@ -450,18 +368,16 @@
                         </article>
                     @empty
                         <div class="col-span-full rounded-xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
-                    <p class="text-lg font-bold text-slate-900" x-text="t('productsPreparing')"></p>
-                    <p class="mt-2 text-sm text-slate-500" x-text="t('productsPreparingDescription')"></p>
+                            <p class="text-lg font-bold text-slate-900">Produk tidak ditemukan</p>
+                            <p class="mt-2 text-sm text-slate-500">Coba ubah kata pencarian atau filter yang dipilih.</p>
                         </div>
                     @endforelse
-                        @if($products->isNotEmpty())
-                    <div x-cloak x-show="visibleCatalogCount === 0" class="col-span-full rounded-xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
-                    <p class="text-sm font-bold text-slate-800">Produk tidak ditemukan</p>
-                    <p class="mt-1 text-xs text-slate-500">Coba ubah kata pencarian atau filter yang dipilih.</p>
-                    </div>
-                        @endif
                     </div>
                 </div>
+                <div class="mt-8 flex justify-center">
+                    {{ $products->onEachSide(1)->links() }}
+                </div>
+                </form>
             </div>
         </section>
 
@@ -596,11 +512,11 @@
         <span class="min-w-0"><span class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"><span x-text="t('liveActivity')"></span><span class="ml-1 font-medium normal-case" x-text="'· ' + t('liveDemo')"></span></span><span class="mt-1 block text-xs font-bold leading-4 text-slate-800 dark:text-slate-100" x-text="liveNotification"></span></span>
     </aside>
 
-    <a href="https://wa.me/628170006055" target="_blank" rel="noopener noreferrer" class="support-float fixed bottom-5 right-5 z-30 flex items-center gap-3 rounded-full border border-white/15 bg-slate-900/80 px-4 py-3 shadow-xl backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-300/40 sm:bottom-7 sm:right-7">
-        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-300/10 text-emerald-300">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0012.1 0C5.5 0 .1 5.3 0 11.9c0 2.1.6 4.2 1.7 6L0 24l6.3-1.6a12 12 0 005.8 1.5h.1c6.6 0 12-5.3 12-11.9a11.8 11.8 0 00-3.7-8.5zM12.1 21.9a10 10 0 01-5.1-1.4l-.4-.2-3.8 1 1-3.7-.3-.4a9.9 9.9 0 01-1.5-5.3A10.1 10.1 0 0112.1 2a10 10 0 017.1 2.9 9.9 9.9 0 012.9 7.1 10.1 10.1 0 01-10 9.9zm5.5-7.5c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-1 .9-.2.2-.4.2-.7.1-.3-.2-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2 0-.4 0-.5l-.9-2.1c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.3.2-.6.2-1.1.2-1.2-.1-.2-.3-.3-.6-.5z"/></svg>
+    <button type="button" @click="openBookingModal()" class="support-float fixed bottom-5 right-5 z-30 flex items-center gap-3 rounded-full border border-white/15 bg-slate-900/80 px-4 py-3 shadow-xl backdrop-blur-xl transition hover:-translate-y-1 hover:border-lime-300/40 sm:bottom-7 sm:right-7">
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-lime-300/10 text-lime-300">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M16 3v4M8 3v4M3 10h18m-12 4h3m-3 3h6"/></svg>
         </span>
-        <span class="hidden text-left sm:block"><span class="block text-[10px] font-semibold text-slate-400">Butuh bantuan?</span><span class="text-xs font-extrabold text-white">Chat WhatsApp</span></span>
-    </a>
+        <span class="hidden text-left sm:block"><span class="block text-[10px] font-semibold text-slate-400">Butuh bantuan?</span><span class="text-xs font-extrabold text-white">Booking workshop</span></span>
+    </button>
 </body>
 </html>

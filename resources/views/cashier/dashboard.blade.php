@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="20">
-    <title>Panel Kasir | Planet Ban</title>
+    <title>Panel Kasir | Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900">
     <header class="bg-slate-950 text-white">
         <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
             <div>
-                <p class="text-xs font-black uppercase tracking-[.2em] text-yellow-300">Planet Ban · Operator</p>
+                <p class="text-xs font-black uppercase tracking-[.2em] text-lime-300">ARISA KNALPOT · OPERATOR</p>
                 <h1 class="mt-1 text-xl font-black sm:text-2xl">Panel Kasir & Antrean</h1>
             </div>
             <nav class="flex items-center gap-2 text-sm">

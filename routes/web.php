@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CashierPanelController;
 use App\Http\Controllers\PlanetBanController;
@@ -69,6 +70,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/bookings', [AdminDashboardController::class, 'bookings'])->name('bookings');
         Route::post('/bookings/{booking}/update', [AdminDashboardController::class, 'updateBookingStatus'])
             ->name('bookings.update');
+        Route::get('/queues', [ServiceQueueDisplayController::class, 'admin'])->name('queues');
+        Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
     });
 });
 

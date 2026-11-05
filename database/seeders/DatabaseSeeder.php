@@ -27,8 +27,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call(ProductSeeder::class);
 
+        Store::query()
+            ->where('name', 'Planet Ban Ahmad Yani')
+            ->update(['name' => 'Arisa Knalpot Ahmad Yani']);
+
         foreach ([
-            ['name' => 'Planet Ban Ahmad Yani', 'address' => 'Jl. Ahmad Yani No. 124', 'city' => 'Surabaya', 'phone' => '0812345678', 'latitude' => -7.28, 'longitude' => 112.74],
+            ['name' => 'Arisa Knalpot Ahmad Yani', 'address' => 'Jl. Ahmad Yani No. 124', 'city' => 'Surabaya', 'phone' => '0812345678', 'latitude' => -7.28, 'longitude' => 112.74],
         ] as $storeData) {
             $store = Store::query()->firstOrNew(['name' => $storeData['name']]);
             $store->forceFill($storeData)->save();

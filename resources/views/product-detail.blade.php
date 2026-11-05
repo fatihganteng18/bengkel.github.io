@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f8fafc">
-    <title>{{ $product->name }} | Planet Ban</title>
+    <meta name="theme-color" content="#090d13">
+    <title>{{ $product->name }} | Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body
-    class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased"
+    class="min-h-screen bg-[#090d13] font-sans text-slate-100 antialiased"
     x-data="planetBanApp"
     data-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
     data-login-url="{{ route('login') }}"
@@ -24,15 +24,15 @@
         </div>
     @endif
 
-    <header class="relative z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
+    <header class="relative z-40 border-b border-white/10 bg-[#090d13]/90 shadow-sm backdrop-blur-xl">
         <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2" aria-label="Planet Ban, beranda">
-                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-950 text-lg font-black italic text-yellow-300 shadow-sm">P</span>
-                <span class="text-lg font-black italic tracking-tight text-blue-950">PLANET<span class="text-blue-600">BAN</span></span>
+            <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2" aria-label="Arisa Knalpot, beranda">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-lime-300 text-lg font-black italic text-slate-950 shadow-sm">E</span>
+                <span class="text-lg font-black italic tracking-tight text-white">Arisa<span class="text-lime-300"> Knalpot</span></span>
             </a>
             <nav class="hidden items-center gap-7 text-sm font-semibold text-slate-600 lg:flex" aria-label="Navigasi utama">
                 <a class="detail-nav-link" href="{{ route('home') }}#layanan">Layanan</a>
-                <a class="detail-nav-link" href="{{ route('home') }}#katalog">Ban & produk</a>
+                <a class="detail-nav-link" href="{{ route('home') }}#katalog">Knalpot & produk</a>
                 <a class="detail-nav-link" href="{{ route('stores.index') }}">Lokasi outlet</a>
                 <a class="detail-nav-link" href="{{ route('booking.status') }}">Cek booking</a>
             </nav>
@@ -54,10 +54,10 @@
 
     <main class="mx-auto w-full max-w-7xl flex-1 px-4 pb-20 pt-5 sm:px-6 lg:px-8 lg:pt-8">
         <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
-            <a href="{{ route('home') }}" class="transition hover:text-blue-900">Home</a><span aria-hidden="true">/</span>
-            <a href="{{ route('home') }}#katalog" class="transition hover:text-blue-900">Ban</a><span aria-hidden="true">/</span>
-            <span class="font-semibold uppercase text-slate-600">PRESA</span><span aria-hidden="true">/</span>
-            <span class="max-w-[18rem] truncate font-bold uppercase text-slate-900" aria-current="page">{{ $product->name }}</span>
+            <a href="{{ route('home') }}" class="transition hover:text-cyan-300">Home</a><span aria-hidden="true">/</span>
+            <a href="{{ route('home') }}#katalog" class="transition hover:text-cyan-300">Katalog knalpot</a><span aria-hidden="true">/</span>
+            <span class="font-semibold uppercase text-slate-400">{{ $product->sub_category ?? $product->category_label }}</span><span aria-hidden="true">/</span>
+            <span class="max-w-[18rem] truncate font-bold uppercase text-white" aria-current="page">{{ $product->name }}</span>
         </nav>
 
         <section class="grid items-start gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(360px,.96fr)] lg:gap-12">
@@ -76,6 +76,7 @@
                     <img
                         :src="activeImage"
                         alt="{{ $product->name }}"
+                        onerror="this.onerror=null;this.src='{{ asset('images/products/exhaust-sample.svg') }}'"
                         class="product-gallery-image relative z-10 h-full w-full object-contain drop-shadow-[0_24px_28px_rgba(15,23,42,.16)]"
                         :class="zooming && 'is-zooming'"
                         :style="zooming ? `transform: scale(1.38); transform-origin: ${zoomX}% ${zoomY}%` : ''"
@@ -116,7 +117,7 @@
                             :aria-label="'Pilih foto ' + (index + 1)"
                             :aria-pressed="activeIndex === index"
                         >
-                            <img :src="image" alt="" class="h-full w-full object-contain">
+                            <img :src="image" alt="" onerror="this.onerror=null;this.src='{{ asset('images/products/exhaust-sample.svg') }}'" class="h-full w-full object-contain">
                         </button>
                     </template>
                     @if($galleryImages->count() <= 1)
@@ -127,7 +128,7 @@
 
             <div class="product-detail-panel rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7 lg:p-8">
                 <div class="mb-4 flex flex-wrap items-center gap-2">
-                    <span class="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.14em] text-blue-900">{{ $product->category === 'tire' ? 'PRESA · BAN MOTOR' : strtoupper($product->category) }}</span>
+                    <span class="rounded-full bg-cyan-300/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.14em] text-cyan-200">{{ $product->sub_category ?? $product->category_label }}</span>
                     @if($product->is_low_stock)
                         <span class="rounded-full bg-amber-50 px-3 py-1.5 text-[10px] font-extrabold text-amber-800">Stok terbatas</span>
                     @endif
@@ -139,13 +140,13 @@
                     <span class="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
                     <span>{{ number_format($soldCount) }} terjual</span>
                     <span class="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
-                    <span>SKU: <strong class="font-bold text-slate-700">{{ $product->sku ?? 'PB-' . str_pad((string) $product->id, 5, '0', STR_PAD_LEFT) }}</strong></span>
+                    <span>SKU: <strong class="font-bold text-slate-200">{{ $product->sku ?? 'EXH-' . str_pad((string) $product->id, 5, '0', STR_PAD_LEFT) }}</strong></span>
                 </div>
 
                 <div class="my-6 border-t border-slate-100"></div>
 
                 <div class="flex flex-wrap items-end gap-x-3 gap-y-2">
-                    <p class="text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">Rp {{ number_format($product->effective_price, 0, ',', '.') }}</p>
+                    <p class="text-3xl font-black tracking-tight text-white sm:text-4xl">Rp {{ number_format($product->effective_price, 0, ',', '.') }}</p>
                     @if($product->has_discount)
                         <p class="pb-1 text-sm font-semibold text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                         <span class="mb-1 rounded-full bg-rose-50 px-2.5 py-1 text-[10px] font-black text-rose-700">Hemat {{ $product->discount_percentage }}%</span>
@@ -156,11 +157,19 @@
                 <div class="mt-7">
                     <h2 class="mb-3 text-xs font-black uppercase tracking-[.15em] text-slate-500">Spesifikasi produk</h2>
                     <dl class="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                        <div class="spec-tile"><dt>Ukuran ban</dt><dd>{{ $tireSize ?? 'Lihat deskripsi' }}</dd></div>
-                        <div class="spec-tile"><dt>Posisi ban</dt><dd>Depan / belakang</dd></div>
-                        <div class="spec-tile"><dt>Diameter velg</dt><dd>{{ $tireSize ? substr($tireSize, strrpos($tireSize, '-') + 1) . '"' : '—' }}</dd></div>
-                        <div class="spec-tile"><dt>Tipe</dt><dd>{{ str_contains(strtolower($product->name), 'tubeless') ? 'Tubeless' : '—' }}</dd></div>
-                        <div class="spec-tile"><dt>Kategori</dt><dd>{{ ucfirst($product->category) }}</dd></div>
+                        @if($product->category === 'exhaust')
+                            <div class="spec-tile"><dt>Inlet / diameter</dt><dd>{{ $product->inlet_size }}</dd></div>
+                            <div class="spec-tile"><dt>Karakter suara</dt><dd>{{ $product->sound_type }}</dd></div>
+                            <div class="spec-tile"><dt>Material</dt><dd>{{ $product->material }}</dd></div>
+                            <div class="spec-tile"><dt>Kapasitas mesin</dt><dd>{{ $product->engine_cc }}</dd></div>
+                            <div class="spec-tile"><dt>Subkategori</dt><dd>{{ $product->sub_category }}</dd></div>
+                        @else
+                            <div class="spec-tile"><dt>Ukuran ban</dt><dd>{{ $tireSize ?? 'Lihat deskripsi' }}</dd></div>
+                            <div class="spec-tile"><dt>Posisi ban</dt><dd>Depan / belakang</dd></div>
+                            <div class="spec-tile"><dt>Diameter velg</dt><dd>{{ $tireSize ? substr($tireSize, strrpos($tireSize, '-') + 1) . '"' : '—' }}</dd></div>
+                            <div class="spec-tile"><dt>Tipe</dt><dd>{{ str_contains(strtolower($product->name), 'tubeless') ? 'Tubeless' : '—' }}</dd></div>
+                            <div class="spec-tile"><dt>Kategori</dt><dd>{{ $product->category_label }}</dd></div>
+                        @endif
                         <div class="spec-tile"><dt>Ketersediaan</dt><dd class="{{ $product->stock > 0 ? 'text-emerald-700' : 'text-rose-700' }}">{{ $product->stock > 0 ? $product->stock . ' pcs' : 'Stok habis' }}</dd></div>
                     </dl>
                 </div>
@@ -200,13 +209,20 @@
             </div>
         </section>
 
-        <section x-data="{ activeTab: 'compatibility', fitmentOpen: true }" class="mt-10 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm sm:mt-14">
+        <section x-data="{ activeTab: 'compatibility', fitmentOpen: true }" class="detail-extra-section mt-10 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm sm:mt-14">
             <div class="flex border-b border-slate-200 px-4 sm:px-7">
-                <button type="button" @click="activeTab = 'compatibility'" :aria-selected="activeTab === 'compatibility'" class="detail-tab" :class="activeTab === 'compatibility' && 'detail-tab-active'">Kompatibilitas</button>
+                <button type="button" @click="activeTab = 'compatibility'" :aria-selected="activeTab === 'compatibility'" class="detail-tab" :class="activeTab === 'compatibility' && 'detail-tab-active'">{{ $product->category === 'exhaust' ? 'Fitment & sound setup' : 'Kompatibilitas' }}</button>
                 <button type="button" @click="activeTab = 'reviews'" :aria-selected="activeTab === 'reviews'" class="detail-tab" :class="activeTab === 'reviews' && 'detail-tab-active'">Ulasan Produk <span class="ml-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] text-slate-500">0</span></button>
             </div>
 
             <div x-show="activeTab === 'compatibility'" x-transition class="p-5 sm:p-7">
+                @if($product->category === 'exhaust')
+                    <div class="rounded-xl border border-cyan-300/20 bg-cyan-300/[0.06] p-5">
+                        <p class="text-sm font-extrabold text-white">Setup dibuat sesuai diameter inlet dan kapasitas mesin.</p>
+                        <p class="mt-2 text-xs leading-6 text-slate-300">Konfirmasi ukuran jalur knalpot dan ruang pemasangan mobil sebelum checkout. Workshop dapat bantu konsultasi karakter suara {{ strtolower($product->sound_type ?? 'custom') }} agar tetap nyaman untuk daily drive.</p>
+                        <p class="mt-3 text-xs font-bold text-lime-300">TIG Argon precision · Daily Drive Approved · Weekend ready</p>
+                    </div>
+                @else
                 <button type="button" @click="fitmentOpen = !fitmentOpen" :aria-expanded="fitmentOpen" class="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/50">
                     <span><span class="block text-sm font-extrabold text-slate-900">Ban ini cocok untuk motor</span><span class="mt-1 block text-xs text-slate-500">{{ $tireSize ? 'Ukuran acuan: ' . $tireSize : 'Konfirmasi ukuran sebelum pemasangan' }}</span></span>
                     <svg class="h-5 w-5 shrink-0 text-slate-500 transition-transform" :class="fitmentOpen && 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
@@ -216,7 +232,7 @@
                         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                             @foreach($compatibleMotorcycles as $motorcycle)
                                 <article class="fitment-card flex items-center gap-3 rounded-xl border border-slate-200 p-4">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-900"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 17 4-7h4l4 7m-8-7-2-3h4m-3 5h6"/></svg></span>
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-300/10 text-cyan-200"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 17 4-7h4l4 7m-8-7-2-3h4m-3 5h6"/></svg></span>
                                     <span><strong class="block text-sm text-slate-800">{{ $motorcycle->brand }}</strong><span class="mt-1 block text-xs text-slate-500">{{ $motorcycle->model_name }}</span></span>
                                 </article>
                             @endforeach
@@ -227,8 +243,9 @@
                             <p class="mt-1 text-xs leading-5 text-slate-500">Data motor yang cocok belum tersedia untuk ukuran {{ $tireSize ?? 'produk ini' }}. Contoh merek untuk diverifikasi: Piaggio dan Vespa. Pastikan ukuran ban depan/belakang sesuai dengan rekomendasi pabrikan.</p>
                         </div>
                     @endif
-                    <p class="mt-4 text-[11px] leading-5 text-slate-500">Kecocokan bergantung pada ukuran ban dan posisi yang direkomendasikan untuk motor Anda. Konfirmasikan kembali dengan mekanik Planet Ban sebelum pemasangan.</p>
+                    <p class="mt-4 text-[11px] leading-5 text-slate-500">Kecocokan bergantung pada ukuran ban dan posisi yang direkomendasikan untuk motor Anda. Konfirmasikan kembali dengan mekanik sebelum pemasangan.</p>
                 </div>
+                @endif
             </div>
 
             <div x-cloak x-show="activeTab === 'reviews'" x-transition class="p-5 sm:p-7">
@@ -240,23 +257,23 @@
             </div>
         </section>
 
-        <section class="mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section class="detail-extra-section mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
             <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
                 <div>
                     <p class="text-[10px] font-black uppercase tracking-[.18em] text-blue-800">Tentang produk</p>
                     <h2 class="mt-2 text-xl font-black text-slate-950">Deskripsi & fitur</h2>
-                    <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{{ $product->description ?: 'Ban tubeless untuk mendukung kenyamanan dan kestabilan berkendara. Pastikan ukuran serta posisi pemasangan sesuai rekomendasi kendaraan Anda.' }}</p>
+                    <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{{ $product->description ?: 'Produk knalpot untuk meningkatkan karakter suara dan performa kendaraan. Pastikan ukuran serta fitment sesuai spesifikasi mobil Anda.' }}</p>
                     <ul class="mt-5 grid gap-3 text-xs leading-5 text-slate-600 sm:grid-cols-2">
-                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Konstruksi tubeless membantu mengurangi risiko kehilangan tekanan secara mendadak saat terjadi kebocoran kecil.</span></li>
-                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Desain tapak mendukung grip dan kestabilan saat berkendara di kondisi jalan yang sesuai.</span></li>
-                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Kompon dan konstruksi dirancang untuk penggunaan harian; tekanan ban tetap perlu diperiksa secara berkala.</span></li>
-                        <li class="flex gap-2"><span class="font-black text-emerald-600">✓</span><span>Pemasangan dan pemeriksaan dapat dilakukan oleh teknisi di outlet Planet Ban.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-lime-300">✓</span><span>Material {{ $product->material ?? 'pilihan' }} dan welding TIG Argon untuk hasil sambungan presisi.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-lime-300">✓</span><span>Karakter suara {{ $product->sound_type ?? 'custom' }} untuk menyesuaikan gaya berkendara.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-lime-300">✓</span><span>Pastikan inlet {{ $product->inlet_size ?? 'sesuai spesifikasi' }} cocok dengan jalur knalpot kendaraan.</span></li>
+                        <li class="flex gap-2"><span class="font-black text-lime-300">✓</span><span>Konsultasi fitment dan opsi pemasangan tersedia melalui workshop Arisa Knalpot.</span></li>
                     </ul>
                 </div>
                 <div class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 md:min-w-56">
                     <p class="text-[10px] font-black uppercase tracking-wider text-blue-800">Standar produk</p>
-                    <p class="mt-2 text-sm font-extrabold text-slate-900">Nomor SNI</p>
-                    <p class="mt-1 text-xs leading-5 text-slate-600">{{ $product->sni_number ?: 'Periksa nomor SNI resmi pada dinding ban atau label kemasan produk.' }}</p>
+                    <p class="mt-2 text-sm font-extrabold text-slate-900">Workshop ready</p>
+                    <p class="mt-1 text-xs leading-5 text-slate-600">Daily drive approved. Konsultasikan setup dan kapasitas mesin sebelum pemasangan.</p>
                 </div>
             </div>
         </section>
@@ -272,12 +289,12 @@
                         <article class="related-product-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                             <div class="flex h-36 items-center justify-center overflow-hidden rounded-xl bg-slate-50 p-4">
                                 @if($relatedProduct->image)
-                                    <img src="{{ $relatedProduct->image }}" alt="{{ $relatedProduct->name }}" loading="lazy" class="h-full w-full object-contain">
+                                    <img src="{{ $relatedProduct->image }}" alt="{{ $relatedProduct->name }}" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('images/products/exhaust-sample.svg') }}'" class="h-full w-full object-contain">
                                 @else
-                                    <span class="text-5xl" aria-hidden="true">🛞</span>
+                                    <span class="text-5xl" aria-hidden="true">⌁</span>
                                 @endif
                             </div>
-                            <span class="mt-4 block text-[9px] font-black uppercase tracking-wider text-blue-800">{{ $relatedProduct->category }}</span>
+                            <span class="mt-4 block text-[9px] font-black uppercase tracking-wider text-cyan-300">{{ $relatedProduct->sub_category ?? $relatedProduct->category_label }}</span>
                             <h3 class="mt-1 line-clamp-2 min-h-10 text-sm font-extrabold text-slate-900">{{ $relatedProduct->name }}</h3>
                             <div class="mt-3 flex items-center justify-between gap-2">
                                 <span class="text-sm font-black text-blue-950">Rp {{ number_format($relatedProduct->effective_price, 0, ',', '.') }}</span>

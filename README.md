@@ -7,17 +7,19 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Planet Ban
+## Arisa Knalpot
 
-A Laravel storefront for motorcycle products and service bookings, with an Alpine.js customer experience, role-protected admin and cashier workspaces, and a live service queue.
+A Laravel storefront and workshop platform for custom car exhaust products, installation bookings, and service queues, with an Alpine.js customer experience and role-protected admin and cashier workspaces.
 
 ### Features
 
-- Product catalog and detail pages with image galleries, tire fitment information, and cart drawer.
-- Service booking, payment-method selection, booking status, and customer account pages.
+- Exhaust catalog and detail pages with subcategory, inlet, sound, material, and engine-capacity specifications.
+- Custom exhaust product booking, payment-method selection, booking status, and customer account pages.
 - Persistent light/dark theme and Indonesian/English interface preferences.
 - Separate customer and administrator sign-in routes.
 - Admin booking management and Chart.js sales, best-seller, and inventory dashboards.
+- Shared admin sidebar for the dashboard, bookings, queue monitor, and product entry form.
+- Admin product creation with exhaust specifications, generated unique slugs, and validated image uploads.
 - Cashier panel for payment confirmation, category-aware service queues, and printable booking receipts.
 - Cashier point of sale for in-store product sales, live totals, stock validation, payment recording, and receipts.
 - Public live queue display at `/antrean`.
@@ -26,18 +28,21 @@ A Laravel storefront for motorcycle products and service bookings, with an Alpin
 
 1. Install PHP and Node dependencies, copy `.env.example` to `.env`, and generate an application key.
 2. Set `ADMIN_PASSWORD` and `CASHIER_PASSWORD` in the local `.env` file. The account emails are `admin@gmail.com` and `kasir@planetban.com`; never commit account passwords to the repository.
-3. Run `php artisan migrate --seed` to create the schema, bootstrap the admin and cashier accounts, and load sample catalog products.
-4. Run `npm install` and `npm run build`, then start the app with `php artisan serve`.
+3. Run `php artisan migrate --seed` to create the schema, bootstrap the admin and cashier accounts, and load 500 sample exhaust products across 11 subcategories.
+4. Run `php artisan storage:link` to publish uploaded product images, then run `npm install` and `npm run build`, and start the app with `php artisan serve`.
 
 The admin and cashier seeders refuse to run without their passwords. Configure the requested local credentials in `.env`; use unique strong passwords on production, set `APP_DEBUG=false`, and use HTTPS.
 
-To load or refresh only the sample products after migrating, run `php artisan db:seed --class=ProductSeeder`.
+To load or refresh only the sample products after migrating, run `php artisan db:seed --class=ProductSeeder`. The product seeder replaces the current product catalog with its 500 sample exhaust products.
 
 ### Sign-in and access
 
 - Customer sign-in: `/login`
 - Administrator sign-in: `/admin/login`
 - Admin workspace: `/admin/dashboard` (requires an authenticated account with the `admin` role)
+- Admin booking management: `/admin/bookings`
+- Admin queue monitor: `/admin/queues`
+- Add an exhaust product: `/admin/products/create`
 - Cashier workspace: `/cashir/dashboard` (requires an authenticated account with the `cashier` role)
 
 Public registration always creates a `user` account and rejects the configured administrator email.

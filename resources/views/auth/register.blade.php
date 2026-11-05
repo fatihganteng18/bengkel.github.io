@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#172554">
-    <title>Daftar Akun - Planet Ban</title>
+    <title>Daftar Akun - Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-100 font-sans text-slate-800 antialiased">
@@ -15,7 +15,7 @@
                 <div class="absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-red-600/20 blur-3xl"></div>
 
                 <a href="{{ route('home') }}" class="relative inline-flex w-fit items-center rounded-xl bg-white/10 px-4 py-2 text-lg font-black italic tracking-wide text-white ring-1 ring-white/15">
-                    PLANET <span class="ml-1 text-yellow-400">BAN</span>
+                    Arisa <span class="ml-1 text-lime-300">Knalpot</span>
                 </a>
 
                 <div class="relative">
@@ -27,10 +27,10 @@
                     </span>
                     <h1 class="mt-6 text-4xl font-black leading-tight tracking-tight lg:text-5xl">
                         Lebih mudah<br>
-                        merawat <span class="text-yellow-400">motor.</span>
+                        upgrade <span class="text-lime-300">mobil.</span>
                     </h1>
                     <p class="mt-5 max-w-sm text-sm leading-7 text-blue-100/80">
-                        Buat akun untuk booking servis di outlet, menyimpan detail kontak, dan mengikuti status kunjungan Anda.
+                        Buat akun untuk booking workshop, menyimpan detail kontak, dan mengikuti status pesanan knalpot.
                     </p>
                     <div class="mt-10 grid grid-cols-2 gap-3">
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
@@ -44,14 +44,14 @@
                     </div>
                 </div>
 
-                <p class="relative text-xs text-blue-100/60">&copy; {{ date('Y') }} Planet Ban.</p>
+                <p class="relative text-xs text-blue-100/60">&copy; {{ date('Y') }} Arisa Knalpot.</p>
             </aside>
 
             <div class="flex items-center justify-center p-6 sm:p-10 lg:p-12">
                 <div class="w-full max-w-md">
                     <div class="mb-7 flex items-center justify-between md:hidden">
                         <a href="{{ route('home') }}" class="rounded-lg bg-blue-950 px-3 py-1.5 text-base font-black italic text-white">
-                            PLANET <span class="text-yellow-400">BAN</span>
+                            Arisa <span class="text-lime-300">Knalpot</span>
                         </a>
                         <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-500 hover:text-blue-900">Beranda</a>
                     </div>

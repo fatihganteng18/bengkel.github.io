@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lupa Password - Planet Ban</title>
+    <title>Lupa Password - Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10 font-sans text-slate-800 antialiased">
     <main class="w-full max-w-lg rounded-3xl border border-white/70 bg-white p-7 shadow-2xl sm:p-10">
         <a href="{{ route('home') }}" class="inline-flex rounded-lg bg-blue-950 px-3 py-1.5 text-base font-black italic text-white">
-            PLANET <span class="ml-1 text-yellow-400">BAN</span>
+            Arisa <span class="ml-1 text-lime-300">Knalpot</span>
         </a>
 
         <div class="mt-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-950">

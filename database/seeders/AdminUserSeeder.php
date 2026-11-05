@@ -25,7 +25,7 @@ class AdminUserSeeder extends Seeder
 
         $admin = User::query()->firstOrNew(['email' => $email]);
         $admin->forceFill([
-            'name' => 'Planet Ban Admin',
+            'name' => 'Arisa Knalpot Admin',
             'password' => Hash::make($password),
             'role' => User::ROLE_ADMIN,
         ])->save();

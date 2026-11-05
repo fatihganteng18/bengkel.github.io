@@ -25,7 +25,7 @@ class CashierUserSeeder extends Seeder
 
         $cashier = User::query()->firstOrNew(['email' => $email]);
         $cashier->forceFill([
-            'name' => 'Planet Ban Kasir',
+            'name' => 'Arisa Knalpot Kasir',
             'password' => Hash::make($password),
             'role' => User::ROLE_CASHIER,
         ])->save();

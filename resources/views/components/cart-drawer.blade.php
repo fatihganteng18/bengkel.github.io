@@ -48,8 +48,8 @@
                 <article class="rounded-2xl border border-white/10 bg-white/[0.035] p-4 transition hover:border-cyan-300/20">
                     <div class="flex gap-4">
                         <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/[0.06] bg-[#111923] text-3xl">
-                            <img x-show="item.image" :src="item.image" :alt="item.name" class="h-full w-full object-contain">
-                            <span x-show="!item.image" aria-hidden="true">🛞</span>
+                            <img x-show="item.image" :src="item.image" :alt="item.name" onerror="this.onerror=null;this.src='/images/products/exhaust-sample.svg'" class="h-full w-full object-contain">
+                            <span x-show="!item.image" aria-hidden="true">⌁</span>
                         </div>
                         <div class="min-w-0 flex-1">
                             <h3 x-text="item.name" class="line-clamp-2 text-sm font-bold text-white"></h3>

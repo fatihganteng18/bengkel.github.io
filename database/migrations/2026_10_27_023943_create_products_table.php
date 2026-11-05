@@ -15,7 +15,7 @@ return new class extends Migration
     $table->id();
     $table->string('name');
     $table->string('slug')->unique();
-    $table->enum('category', ['tire', 'oil', 'sparepart', 'service']);
+    $table->string('category');
     $table->decimal('price', 12, 2);
     $table->integer('stock')->default(0);
     $table->text('description')->nullable();

@@ -9,6 +9,16 @@ class ServiceQueueDisplayController extends Controller
 {
     public function __invoke(): View
     {
+        return $this->renderQueueDisplay(false);
+    }
+
+    public function admin(): View
+    {
+        return $this->renderQueueDisplay(true);
+    }
+
+    private function renderQueueDisplay(bool $adminLayout): View
+    {
         $queues = ServiceQueue::query()
             ->with(['store', 'booking.items.product'])
             ->whereDate('queue_date', now()->toDateString())
@@ -22,6 +32,6 @@ class ServiceQueueDisplayController extends Controller
             ->get()
             ->groupBy(fn (ServiceQueue $queue): string => $queue->store->name);
 
-        return view('queues.display', compact('queues'));
+        return view('queues.display', compact('queues', 'adminLayout'));
     }
 }

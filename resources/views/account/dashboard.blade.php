@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akun Saya - Planet Ban</title>
+    <title>Akun Saya - Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased">
     <header class="sticky top-0 z-30 border-b border-slate-100 bg-white/95 shadow-sm backdrop-blur">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="rounded-lg bg-blue-950 px-3 py-1.5 text-lg font-black italic text-white shadow">
-                PLANET <span class="text-yellow-400">BAN</span>
+                Arisa <span class="text-lime-300">Knalpot</span>
             </a>
             <div class="flex items-center gap-3 sm:gap-5">
                 <a href="{{ route('home') }}" class="hidden text-sm font-semibold text-slate-600 transition hover:text-blue-950 sm:block">Lanjut belanja</a>
@@ -33,7 +33,7 @@
             <div class="absolute -right-16 -top-28 h-72 w-72 rounded-full bg-blue-800/60 blur-3xl"></div>
             <div class="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-sm font-bold uppercase tracking-[0.15em] text-yellow-400">Akun Planet Ban</p>
+                    <p class="text-sm font-bold uppercase tracking-[0.15em] text-lime-300">ARISA KNALPOT · AKUN KAMU</p>
                     <h1 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Halo, {{ Auth::user()->name }}</h1>
                     <p class="mt-2 text-sm text-blue-100/80">Kelola booking servis dan pantau kunjungan Anda di sini.</p>
                 </div>
@@ -112,7 +112,7 @@
                             </svg>
                         </span>
                         <h3 class="mt-4 text-lg font-black text-slate-950">Belum ada booking</h3>
-                        <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">Booking servis atau pilih produk untuk dipasang di outlet Planet Ban.</p>
+                        <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">Booking workshop atau pilih setup knalpot yang paling cocok buat mobilmu.</p>
                         <a href="{{ route('home') }}#beranda" class="mt-5 inline-flex rounded-xl bg-blue-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-900">Mulai booking</a>
                     </div>
                 @endforelse

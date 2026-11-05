@@ -128,7 +128,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return redirect()->intended(route('home'))
-            ->with('success', 'Akun berhasil dibuat. Selamat datang di Planet Ban!');
+            ->with('success', 'Akun berhasil dibuat. Selamat datang di Arisa Knalpot!');
     }
 
     public function dashboard(): View|RedirectResponse

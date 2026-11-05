@@ -13,14 +13,83 @@ use Illuminate\Validation\ValidationException;
 
 class PlanetBanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:120'],
+            'category' => ['nullable', 'string', 'max:50'],
+            'sub_category' => ['nullable', 'string', 'max:120'],
+            'brand' => ['nullable', 'string', 'max:80'],
+            'min_price' => ['nullable', 'integer', 'min:0'],
+            'max_price' => ['nullable', 'integer', 'min:0'],
+            'material' => ['nullable', 'in:Stainless Steel,Galvanis,Karbon'],
+            'inlet_size' => ['nullable', 'in:1.5 inch,2.0 inch,2.25 inch,2.5 inch,3.0 inch'],
+            'sound_type' => ['nullable', 'in:Suara Halus Standart,Bass Bulat / Adem,Gahar,Silent'],
+            'engine_cc' => ['nullable', 'in:1.0cc - 1.6cc,1.8cc - 2.0cc,2.5cc - 3.5cc'],
+            'sort' => ['nullable', 'in:relevance,price-asc,price-desc,name'],
+        ]);
+        $effectivePriceSql = 'CASE WHEN sale_price IS NOT NULL AND sale_price > 0 AND sale_price < price THEN sale_price ELSE price END';
+        $productQuery = Product::query();
+
+        if (! empty($filters['q'])) {
+            $search = trim($filters['q']);
+            $productQuery->where(function ($query) use ($search): void {
+                foreach (['name', 'sub_category', 'description', 'material', 'inlet_size', 'sound_type', 'engine_cc'] as $column) {
+                    $query->orWhere($column, 'like', '%'.$search.'%');
+                }
+            });
+        }
+
+        foreach ([
+            'category' => 'category',
+            'sub_category' => 'sub_category',
+            'material' => 'material',
+            'inlet_size' => 'inlet_size',
+            'sound_type' => 'sound_type',
+            'engine_cc' => 'engine_cc',
+        ] as $filter => $column) {
+            if (! empty($filters[$filter]) && ! ($filter === 'category' && $filters[$filter] === 'all')) {
+                $productQuery->where($column, $filters[$filter]);
+            }
+        }
+
+        if (! empty($filters['brand'])) {
+            $productQuery->where('name', 'like', trim($filters['brand']).' %');
+        }
+
+        if (isset($filters['min_price'])) {
+            $productQuery->whereRaw("{$effectivePriceSql} >= ?", [(int) $filters['min_price']]);
+        }
+
+        if (isset($filters['max_price'])) {
+            $productQuery->whereRaw("{$effectivePriceSql} <= ?", [(int) $filters['max_price']]);
+        }
+
+        match ($filters['sort'] ?? 'relevance') {
+            'price-asc' => $productQuery->orderByRaw("{$effectivePriceSql} ASC"),
+            'price-desc' => $productQuery->orderByRaw("{$effectivePriceSql} DESC"),
+            'name' => $productQuery->orderBy('name'),
+            default => $productQuery->orderBy('id'),
+        };
+
+        $products = $productQuery->paginate(16)->appends($filters);
+        $catalogSubCategories = Product::query()
+            ->whereNotNull('sub_category')
+            ->distinct()
+            ->orderBy('sub_category')
+            ->pluck('sub_category');
         $stores = Store::all();
         $motorcycles = Motorcycle::all();
         $bookingItems = $this->restoreBookingItems();
 
-        return view('planet-ban', compact('products', 'stores', 'motorcycles', 'bookingItems'));
+        return view('planet-ban', compact(
+            'products',
+            'stores',
+            'motorcycles',
+            'bookingItems',
+            'filters',
+            'catalogSubCategories',
+        ));
     }
 
     public function showProduct($id)

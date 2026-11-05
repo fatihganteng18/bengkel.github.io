@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk #{{ $booking->id }} | Planet Ban</title>
+    <title>Struk #{{ $booking->id }} | Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @media print {
@@ -15,7 +15,7 @@
 <body class="bg-slate-100 p-4 text-slate-900 sm:p-8">
     <main class="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <header class="border-b border-dashed border-slate-300 pb-5 text-center">
-            <p class="text-xl font-black italic">PLANET BAN</p>
+            <p class="text-xl font-black italic">ARISA KNALPOT</p>
             <p class="mt-1 text-xs text-slate-500">{{ $booking->store->name }} · {{ $booking->store->address }}</p>
             <h1 class="mt-5 text-lg font-black">{{ $booking->booking_type === \App\Models\Booking::TYPE_COUNTER_SALE ? 'STRUK TRANSAKSI KASIR' : 'STRUK PEMESANAN' }}</h1>
             <p class="mt-1 text-xs text-slate-500">Booking #{{ $booking->id }} · {{ $booking->created_at->format('d/m/Y H:i') }}</p>
@@ -55,7 +55,7 @@
             <p><span class="font-bold">Status pembayaran:</span> {{ match ($booking->payment?->status) {'paid' => 'Lunas', 'failed' => 'Gagal', 'pending' => 'Menunggu konfirmasi', default => '-'} }}</p>
         </section>
 
-        <p class="border-t border-dashed border-slate-300 pt-4 text-center text-xs text-slate-500">Terima kasih telah mempercayakan perawatan kendaraan Anda kepada Planet Ban.</p>
+        <p class="border-t border-dashed border-slate-300 pt-4 text-center text-xs text-slate-500">Terima kasih telah memilih Arisa Knalpot. Sound different, drive your vibe.</p>
         <div class="no-print mt-6 flex gap-3">
             <button type="button" onclick="window.print()" class="flex-1 rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800">Cetak struk</button>
             <a href="{{ route('cashir.dashboard') }}" class="rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">Kembali</a>

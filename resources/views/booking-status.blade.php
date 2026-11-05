@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planet Ban - Cek Status Booking</title>
+    <title>Arisa Knalpot - Cek Status Booking</title>
     @if ($booking?->payment?->uses_demo_qr && $booking->payment->status === 'pending')
         <meta http-equiv="refresh" content="15">
     @endif
@@ -13,7 +13,7 @@
 
     <header class="bg-white shadow-xs border-b border-gray-100 py-4 px-6 flex justify-between items-center">
         <a href="/home" class="bg-blue-900 text-white font-black italic px-3 py-1 rounded-lg text-lg">
-            PLANET <span class="text-yellow-400">BAN</span>
+            Arisa <span class="text-lime-300">Knalpot</span>
         </a>
         <a href="/home" class="text-sm font-bold text-blue-900 hover:underline">&larr; Kembali ke Beranda</a>
     </header>

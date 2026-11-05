@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lokasi Toko Planet Ban Seluruh Indonesia</title>
+    <title>Lokasi Workshop Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen font-sans" x-data="{ searchCity: '' }">
@@ -13,7 +13,7 @@
         <div class="container mx-auto px-4 md:px-12 py-3 flex justify-between items-center">
             <a href="/home" class="flex items-center gap-2">
                 <div class="bg-blue-900 text-white font-black italic px-3 py-1 rounded-lg tracking-wider text-lg shadow">
-                    PLANET <span class="text-yellow-400">BAN</span>
+                    Arisa <span class="text-lime-300">Knalpot</span>
                 </div>
             </a>
             
@@ -38,7 +38,7 @@
     <section class="bg-gradient-to-r from-blue-900 to-blue-950 text-white py-12 text-center shadow-inner">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl md:text-4xl font-black tracking-tight">Lokasi Toko</h1>
-            <p class="text-xs md:text-sm text-blue-200 mt-2">Temukan jaringan outlet resmi Planet Ban terdekat di kota Anda</p>
+            <p class="text-xs md:text-sm text-blue-200 mt-2">Kelola lokasi workshop Arisa Knalpot</p>
         </div>
     </section>
 
@@ -81,7 +81,7 @@
     </main>
 
     <footer class="bg-gray-900 text-white text-center py-8 mt-16 text-xs text-gray-400">
-        &copy; 2026 Planet Ban. Hak Cipta Dilindungi.
+        &copy; 2026 Arisa Knalpot. Hak Cipta Dilindungi.
     </footer>
 </body>
 </html>

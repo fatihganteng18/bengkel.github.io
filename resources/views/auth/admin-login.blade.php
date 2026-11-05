@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - Planet Ban</title>
+    <title>Login Admin - Arisa Knalpot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800 antialiased">
     <header class="border-b border-slate-100 bg-white px-5 py-4 shadow-sm sm:px-8">
         <div class="mx-auto flex max-w-7xl items-center justify-between">
             <a href="{{ route('home') }}" class="rounded-lg bg-blue-950 px-3 py-1.5 text-lg font-black italic text-white shadow">
-                PLANET <span class="text-yellow-400">BAN</span>
+                Arisa <span class="text-lime-300">Knalpot</span>
             </a>
             <a href="{{ route('home') }}" class="text-sm font-bold text-blue-950 transition hover:text-blue-700">&larr; Kembali ke Beranda</a>
         </div>
@@ -25,7 +25,7 @@
             </div>
 
             <h1 class="text-2xl font-black text-slate-900">Login Admin</h1>
-            <p class="mt-2 text-sm text-slate-500">Masuk untuk mengelola booking Planet Ban.</p>
+            <p class="mt-2 text-sm text-slate-500">Masuk untuk mengelola workshop Arisa Knalpot.</p>
 
             @if ($errors->any())
                 <div role="alert" class="mt-6 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm font-semibold text-red-700">
@@ -62,7 +62,7 @@
     </main>
 
     <footer class="border-t border-slate-100 bg-white px-4 py-5 text-center text-xs text-slate-500">
-        &copy; {{ date('Y') }} Planet Ban.
+        &copy; {{ date('Y') }} Arisa Knalpot.
     </footer>
 </body>
 </html>
